@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">FinalProject</string>
+    <string name="login_text">login</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="remember_me">Remember me?</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="select_language">Select Language</string>
+    <string name="or_sign_up_with">Or sign up with</string>
+    <string name="create_account">new user ? create an account</string>
+    <string name="app_name">Pothole \nDiscoSafe</string>
+    <string name="google_login">Sign in with Google</string>
+    <string name="apple_login">Sign in with Apple</string>
+    <string name="facebook_login">Sign in with Facebook</string>
 </resources>
