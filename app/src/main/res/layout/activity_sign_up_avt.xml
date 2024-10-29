@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    tools:context=".SignUp_Avt">
+    <!-- Nút đóng -->
+    <ImageView
+        android:id="@+id/btnClose"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_close"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@string/close" />
+
+    <!-- Chữ chào người dùng -->
+    <TextView
+        android:id="@+id/tvGreeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btnClose"
+        android:layout_marginTop="32dp"
+        android:text="@string/hi_hau"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+    <!-- Chữ yêu cầu xác nhận -->
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvGreeting"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="@string/choose_your_profile_avatar"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white" />
+
+    <!-- Hình đại diện -->
+    <RelativeLayout
+        android:id="@+id/avatarContainer"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/tvMessage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/doraemon" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/btnEditAvatar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_edit"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:contentDescription="@string/edit_avatar" />
+    </RelativeLayout>
+
+    <!-- Các trường thông tin -->
+
+    <!-- Nút xác nhận -->
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="60dp"
+        android:paddingVertical="12dp"
+        android:text="@string/next"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#000000"
+        android:layout_below="@id/avatarContainer"
+        android:textStyle="bold" />
+
+    <!-- Các thanh ngang dưới nút Confirm -->
+    <LinearLayout
+        android:id="@+id/lineContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/btnNext"
+        android:layout_marginTop="470dp"
+        android:layout_marginHorizontal="24dp"
+        android:gravity="center">
+
+        <!-- Các thanh ngang -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:layout_marginHorizontal="4dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:layout_marginHorizontal="4dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:layout_marginHorizontal="4dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:background="#000000"
+            android:layout_marginHorizontal="4dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:layout_marginHorizontal="4dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="1"
+            android:background="#000000" />
+    </LinearLayout>
+
+</RelativeLayout>

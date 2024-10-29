@@ -15,4 +15,27 @@
     <string name="enter_your_password_again">Enter your password again</string>
     <string name="show_password">Show Password</string>
     <string name="verify">Verify</string>
+    <string name="edit_avatar">Edit Avatar</string>
+    <string name="name">name</string>
+    <string name="tran_ngoc_hau">Tran Ngoc Hau</string>
+    <string name="username">username</string>
+    <string name="hauuit2252">hauuit2252</string>
+    <string name="email">email</string>
+    <string name="_22502412_gm_uit_edu_vn">22502412@gm.uit.edu.vn</string>
+    <string name="password">password</string>
+    <string name="show_pass">Show Password</string>
+    <string name="confirm">Confirm</string>
+    <string name="please_confirm_your_details">Please confirm your details</string>
+    <string name="hi_hau">Hi, Hau</string>
+    <string name="close">Close</string>
+    <string name="choose_your_profile_avatar">Choose your profile avatar</string>
+    <string name="next">Next</string>
+    <string name="choose_a_password">Choose a password</string>
+    <string name="enter_your_pass">Enter your password</string>
+    <string name="your_email">Your email</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="your_username">Your username</string>
+    <string name="enter_your_username">Enter your username</string>
+    <string name="your_name">Your name</string>
+    <string name="enter_your_name">Enter your name</string>
 </resources>
