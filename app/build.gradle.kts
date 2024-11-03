@@ -32,7 +32,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -52,5 +51,6 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
-
+    implementation("com.google.maps:google-maps-services:0.18.0") // Thêm phiên bản cụ thể
+    implementation("com.google.maps.android:android-maps-utils:2.2.3")
 }
