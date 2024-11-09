@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".DashBoard">
+
+  <!-- Main RelativeLayout for background -->
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@drawable/gradient_background" />
+
+  <!-- LinearLayout for input fields and buttons -->
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_gravity="center_horizontal"
+      android:padding="20dp">
+
+    <!-- Input Row: Asset Name and Attribute -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+      <!-- Asset Name Input -->
+      <com.google.android.material.textfield.TextInputLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginEnd="6dp"
+          android:hint="Asset_Name"
+          app:boxBackgroundColor="@color/white"
+          app:boxStrokeWidth="0sp"
+          style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            app:simpleItems="asset_type_list" />
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <!-- Attribute Input -->
+      <com.google.android.material.textfield.TextInputLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginStart="6dp"
+          android:hint="Attribute"
+          app:boxBackgroundColor="@color/white"
+          app:boxStrokeWidth="0sp"
+          style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+      </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <!-- Date Input Row: Start Date and End Date -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+      <!-- Start Date Input -->
+      <com.google.android.material.textfield.TextInputLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginEnd="6dp"
+          android:hint="Start_Date"
+          app:boxBackgroundColor="@color/white"
+          app:boxStrokeWidth="0sp"
+          style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="11sp" />
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <!-- End Date Input -->
+      <com.google.android.material.textfield.TextInputLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginStart="6dp"
+          android:hint="End_Date"
+          app:boxBackgroundColor="@color/white"
+          app:boxStrokeWidth="0sp"
+          style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="11sp" />
+      </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <!-- FrameLayout for Column and Pie Charts -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+      <!-- FrameLayout for Column Chart -->
+      <FrameLayout
+          android:layout_width="0dp"
+          android:layout_height="240dp"
+          android:layout_weight="1"
+          android:background="stat_container"
+          android:padding="16dp"
+          android:layout_marginEnd="4dp">
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/column_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+      </FrameLayout>
+
+      <!-- FrameLayout for Pie Chart -->
+      <FrameLayout
+          android:layout_width="0dp"
+          android:layout_height="240dp"
+          android:layout_weight="1"
+          android:background="stat_container"
+          android:padding="16dp"
+          android:layout_marginStart="4dp">
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pie_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+      </FrameLayout>
+    </LinearLayout>
+
+    <!-- FrameLayout for Line Chart -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:background="stat_container"
+        android:layout_marginBottom="8dp"
+        android:padding="16dp">
+
+      <com.github.mikephil.charting.charts.LineChart
+          android:id="@+id/line_chart"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <!-- Buttons: Show and Download -->
+
+  </LinearLayout>
+
+  <!-- BottomAppBar for Navigation -->
+
+  <!-- FloatingActionButton -->
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      app:fabSize="mini"
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
