@@ -35,7 +35,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:layout_marginEnd="6dp"
-          android:hint="Asset_Name"
+          android:hint="@string/Asset_Name"
           app:boxBackgroundColor="@color/white"
           app:boxStrokeWidth="0sp"
           style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="11sp"
-            app:simpleItems="asset_type_list" />
+            app:simpleItems="@arrays/asset_type_list" />
       </com.google.android.material.textfield.TextInputLayout>
 
       <!-- Attribute Input -->
@@ -53,7 +53,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:layout_marginStart="6dp"
-          android:hint="Attribute"
+          android:hint="@string/Attribute"
           app:boxBackgroundColor="@color/white"
           app:boxStrokeWidth="0sp"
           style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
@@ -62,6 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="11sp"
+            app:simpleItems="@array/asset_type_list" />
       </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -78,7 +79,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:layout_marginEnd="6dp"
-          android:hint="Start_Date"
+          android:hint="@string/Start_Date"
           app:boxBackgroundColor="@color/white"
           app:boxStrokeWidth="0sp"
           style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
@@ -95,7 +96,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:layout_marginStart="6dp"
-          android:hint="End_Date"
+          android:hint="@string/End_Date"
           app:boxBackgroundColor="@color/white"
           app:boxStrokeWidth="0sp"
           style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
@@ -119,7 +120,7 @@
           android:layout_width="0dp"
           android:layout_height="240dp"
           android:layout_weight="1"
-          android:background="stat_container"
+          android:background="@drawable/stat_container"
           android:padding="16dp"
           android:layout_marginEnd="4dp">
 
@@ -134,7 +135,7 @@
           android:layout_width="0dp"
           android:layout_height="240dp"
           android:layout_weight="1"
-          android:background="stat_container"
+          android:background="@drawable/stat_container"
           android:padding="16dp"
           android:layout_marginStart="4dp">
 
@@ -149,7 +150,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:background="stat_container"
+        android:background="@drawable/stat_container"
         android:layout_marginBottom="8dp"
         android:padding="16dp">
 
@@ -170,5 +171,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
+      app:layout_anchor="@id/bottomAppBar"
       app:fabSize="mini"
+      android:src="drawable/predict" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
