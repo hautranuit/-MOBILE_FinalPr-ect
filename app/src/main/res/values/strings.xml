@@ -56,4 +56,10 @@
     <string name="ngoc_hau">Ngoc Hau</string>
     <string name="settings">Settings</string>
     <string name="pothele_discosafe">POTHELE DISCOSAFE</string>
+    <string name="Asset_Name">Asset Name</string>
+    <string name="Attribute">Attribute</string>
+    <string name="Start_Date">Start_Date</string>
+    <string name="End_Date">End_Date</string>
+
+
 </resources>

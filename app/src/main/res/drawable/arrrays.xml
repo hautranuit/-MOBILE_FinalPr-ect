@@ -1,8 +1,0 @@
-<resources>
-    <string-array name="asset_type_list">
-        <item>Asset Type 1</item>
-        <item>Asset Type 2</item>
-        <item>Asset Type 3</item>
-        <item>Asset Type 4</item>
-    </string-array>
-</resources>
