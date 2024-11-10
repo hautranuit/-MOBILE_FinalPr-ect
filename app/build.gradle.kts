@@ -31,7 +31,6 @@ android {
     }
 }
 
-
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -57,4 +56,12 @@ dependencies {
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation ("com.mapbox.maps:android:11.7.2")
     implementation ("com.mapbox.navigation:android:2.15.2")
+    implementation ("com.mapbox.mapboxsdk:mapbox-android-core:3.1.0")
+    implementation ("com.mapbox.mapboxsdk:mapbox-android-plugin-locationlayer:0.11.0")
+    implementation ("com.mapbox.mapboxsdk:mapbox-sdk-services:4.8.0")
+    implementation ("com.mapbox.navigation:android:2.17.1")
+    implementation ("com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0")
+    implementation ("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6")
+    implementation ("com.mapbox.mapboxsdk:mapbox-android-sdk:9.5.0")
+
 }

@@ -14,6 +14,8 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -80,6 +83,11 @@ import com.mapbox.navigation.ui.voice.model.SpeechError;
 import com.mapbox.navigation.ui.voice.model.SpeechValue;
 import com.mapbox.navigation.ui.voice.model.SpeechVolume;
 import com.mapbox.navigation.ui.voice.view.MapboxSoundButton;
+import com.mapbox.search.autocomplete.PlaceAutocomplete;
+import com.mapbox.search.autocomplete.PlaceAutocompleteSuggestion;
+import com.mapbox.search.ui.adapter.autocomplete.PlaceAutocompleteUiAdapter;
+import com.mapbox.search.ui.view.CommonSearchViewConfiguration;
+import com.mapbox.search.ui.view.SearchResultsView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -87,13 +95,17 @@ import java.util.Locale;
 import java.util.Objects;
 
 import kotlin.Unit;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
+import kotlin.coroutines.EmptyCoroutineContext;
 import kotlin.jvm.functions.Function1;
 
-public class MainActivity extends AppCompatActivity {
+public class Map_Offical extends AppCompatActivity {
     MapView mapView;
     MaterialButton setRoute;
     FloatingActionButton focusLocationBtn;
     private final NavigationLocationProvider navigationLocationProvider = new NavigationLocationProvider();
+
     private MapboxRouteLineView routeLineView;
     private MapboxRouteLineApi routeLineApi;
     private final LocationObserver locationObserver = new LocationObserver() {
@@ -132,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         CameraOptions cameraOptions = new CameraOptions.Builder().center(point).zoom(18.0).bearing(bearing).pitch(45.0)
                 .padding(new EdgeInsets(1000.0, 0.0, 0.0, 0.0)).build();
 
-        getCamera(mapView).easeTo(cameraOptions, animationOptions);
+        getCamera(mapView).easeTo(cameraOptions, animationOptions, null);
     }
     private final OnMoveListener onMoveListener = new OnMoveListener() {
         @Override
@@ -156,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(Boolean result) {
             if (result) {
-                Toast.makeText(MainActivity.this, "Permission granted! Restart this app", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Map_Offical.this, "Permission granted! Restart this app", Toast.LENGTH_SHORT).show();
             }
         }
     });
@@ -200,6 +212,11 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private boolean isVoiceInstructionsMuted = false;
+    private PlaceAutocomplete placeAutocomplete;
+    private SearchResultsView searchResultsView;
+    private PlaceAutocompleteUiAdapter placeAutocompleteUiAdapter;
+    private TextInputEditText searchET;
+    private boolean ignoreNextQueryUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,8 +232,8 @@ public class MainActivity extends AppCompatActivity {
         routeLineView = new MapboxRouteLineView(options);
         routeLineApi = new MapboxRouteLineApi(options);
 
-        speechApi = new MapboxSpeechApi(MainActivity.this, getString(R.string.mapbox_access_token), Locale.US.toLanguageTag());
-        mapboxVoiceInstructionsPlayer = new MapboxVoiceInstructionsPlayer(MainActivity.this, Locale.US.toLanguageTag());
+        speechApi = new MapboxSpeechApi(Map_Offical.this, getString(R.string.mapbox_access_token), Locale.US.toLanguageTag());
+        mapboxVoiceInstructionsPlayer = new MapboxVoiceInstructionsPlayer(Map_Offical.this, Locale.US.toLanguageTag());
 
         NavigationOptions navigationOptions = new NavigationOptions.Builder(this).accessToken(getString(R.string.mapbox_access_token)).build();
 
@@ -226,6 +243,51 @@ public class MainActivity extends AppCompatActivity {
         mapboxNavigation.registerRoutesObserver(routesObserver);
         mapboxNavigation.registerLocationObserver(locationObserver);
         mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver);
+
+        placeAutocomplete = PlaceAutocomplete.create(getString(R.string.mapbox_access_token));
+        searchET = findViewById(R.id.searchET);
+
+        searchResultsView = findViewById(R.id.search_results_view);
+        searchResultsView.initialize(new SearchResultsView.Configuration(new CommonSearchViewConfiguration()));
+
+        placeAutocompleteUiAdapter = new PlaceAutocompleteUiAdapter(searchResultsView, placeAutocomplete, LocationEngineProvider.getBestLocationEngine(Map_Offical.this));
+
+        searchET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (ignoreNextQueryUpdate) {
+                    ignoreNextQueryUpdate = false;
+                } else {
+                    placeAutocompleteUiAdapter.search(charSequence.toString(), new Continuation<Unit>() {
+                        @NonNull
+                        @Override
+                        public CoroutineContext getContext() {
+                            return EmptyCoroutineContext.INSTANCE;
+                        }
+
+                        @Override
+                        public void resumeWith(@NonNull Object o) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    searchResultsView.setVisibility(View.VISIBLE);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         MapboxSoundButton soundButton = findViewById(R.id.soundButton);
         soundButton.unmute();
@@ -244,13 +306,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(Map_Offical.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 activityResultLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         }
 
-        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(Map_Offical.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(Map_Offical.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             activityResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
             activityResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
         } else {
@@ -264,11 +326,11 @@ public class MainActivity extends AppCompatActivity {
         setRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Please select a location in map", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Map_Offical.this, "Please select a location in map", Toast.LENGTH_SHORT).show();
             }
         });
 
-        mapView.getMapboxMap().loadStyleUri("mapbox://styles/hautranuit/cm3ba35eb002z01pn6u1kcjrn", new Style.OnStyleLoaded() {
+        mapView.getMapboxMap().loadStyleUri(Style.SATELLITE, new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 mapView.getMapboxMap().setCamera(new CameraOptions.Builder().zoom(20.0).build());
@@ -311,13 +373,51 @@ public class MainActivity extends AppCompatActivity {
                         focusLocationBtn.hide();
                     }
                 });
+
+                placeAutocompleteUiAdapter.addSearchListener(new PlaceAutocompleteUiAdapter.SearchListener() {
+                    @Override
+                    public void onSuggestionsShown(@NonNull List<PlaceAutocompleteSuggestion> list) {
+
+                    }
+
+                    @Override
+                    public void onSuggestionSelected(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
+                        ignoreNextQueryUpdate = true;
+                        focusLocation = false;
+                        searchET.setText(placeAutocompleteSuggestion.getName());
+                        searchResultsView.setVisibility(View.GONE);
+
+                        pointAnnotationManager.deleteAll();
+                        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(bitmap)
+                                .withPoint(placeAutocompleteSuggestion.getCoordinate());
+                        pointAnnotationManager.create(pointAnnotationOptions);
+                        updateCamera(placeAutocompleteSuggestion.getCoordinate(), 0.0);
+
+                        setRoute.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                fetchRoute(placeAutocompleteSuggestion.getCoordinate());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onPopulateQueryClick(@NonNull PlaceAutocompleteSuggestion placeAutocompleteSuggestion) {
+                        //queryEditText.setText(placeAutocompleteSuggestion.getName());
+                    }
+
+                    @Override
+                    public void onError(@NonNull Exception e) {
+
+                    }
+                });
             }
         });
     }
 
     @SuppressLint("MissingPermission")
     private void fetchRoute(Point point) {
-        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(MainActivity.this);
+        LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(Map_Offical.this);
         locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
             @Override
             public void onSuccess(LocationEngineResult result) {
@@ -345,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onFailure(@NonNull List<RouterFailure> list, @NonNull RouteOptions routeOptions) {
                         setRoute.setEnabled(true);
                         setRoute.setText("Set route");
-                        Toast.makeText(MainActivity.this, "Route request failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Map_Offical.this, "Route request failed", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
