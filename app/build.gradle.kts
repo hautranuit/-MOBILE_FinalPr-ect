@@ -56,5 +56,5 @@ dependencies {
     implementation("com.google.maps.android:android-maps-utils:2.2.3")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation ("com.mapbox.maps:android:11.7.2")
-
+    implementation ("com.mapbox.navigation:android:2.15.2")
 }
