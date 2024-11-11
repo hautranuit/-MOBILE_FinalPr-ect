@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -63,5 +64,5 @@ dependencies {
     implementation ("com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0")
     implementation ("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6")
     implementation ("com.mapbox.mapboxsdk:mapbox-android-sdk:9.5.0")
-
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.1.3-2")
 }
