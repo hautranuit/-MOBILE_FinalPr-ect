@@ -23,12 +23,12 @@
         android:id="@+id/tvGreeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/btnClose"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="@string/hi_hau"
-        android:textSize="24sp"
+        android:text="@string/hi"
         android:textColor="@android:color/white"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <!-- Chữ yêu cầu xác nhận -->
@@ -88,14 +88,15 @@
             android:textColor="@android:color/white"
             android:paddingBottom="4dp" />
 
-        <TextView
+        <EditText
+            android:id="@+id/edit_text_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tran_ngoc_hau"
-            android:textColor="@android:color/white"
             android:background="?android:attr/selectableItemBackground"
+            android:backgroundTint="#2F2F2F"
             android:padding="8dp"
-            android:backgroundTint="#2F2F2F"/>
+            android:text="@string/tran_ngoc_hau"
+            android:textColor="@android:color/white" />
 
         <!-- Tên đăng nhập -->
         <TextView
@@ -107,13 +108,14 @@
             android:layout_marginTop="16dp" />
 
         <TextView
+            android:id="@+id/text_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hauuit2252"
-            android:textColor="@android:color/white"
             android:background="?android:attr/selectableItemBackground"
+            android:backgroundTint="#2F2F2F"
             android:padding="8dp"
-            android:backgroundTint="#2F2F2F"/>
+            android:text="@string/hauuit2252"
+            android:textColor="@android:color/white" />
 
         <!-- Email -->
 
@@ -126,13 +128,14 @@
             android:textColor="@android:color/white" />
 
         <TextView
+            android:id="@+id/text_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/_22502412_gm_uit_edu_vn"
-            android:textColor="@android:color/white"
             android:background="?android:attr/selectableItemBackground"
+            android:backgroundTint="#2F2F2F"
             android:padding="8dp"
-            android:backgroundTint="#2F2F2F"/>
+            android:text="@string/_22502412_gm_uit_edu_vn"
+            android:textColor="@android:color/white" />
 
         <!-- Mật khẩu -->
         <TextView
@@ -149,10 +152,11 @@
             android:background="?android:attr/selectableItemBackground"
             android:padding="8dp">
 
-            <TextView
+            <EditText
+                android:id="@+id/edit_text_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="**********"
+                android:inputType="textPassword"
                 android:textColor="@android:color/white" />
 
             <ImageView

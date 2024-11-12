@@ -23,12 +23,12 @@
         android:id="@+id/tvGreeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/btnClose"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="@string/hi_hau"
-        android:textSize="24sp"
+        android:text="@string/hi"
         android:textColor="@android:color/white"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <!-- Chữ yêu cầu xác nhận -->

@@ -23,12 +23,12 @@
         android:id="@+id/tvGreeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/btnClose"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="@string/hi_hau"
-        android:textSize="24sp"
+        android:text="@string/hi"
         android:textColor="@android:color/white"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <!-- Chữ yêu cầu xác nhận -->
@@ -66,17 +66,18 @@
             android:paddingBottom="48dp" />
 
         <EditText
+            android:id="@+id/edittext_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
+            android:alpha="0.5"
             android:background="?android:attr/selectableItemBackground"
-            android:padding="12dp"
-            android:textSize="16sp"
             android:backgroundTint="#2F2F2F"
             android:hint="@string/enter_your_email"
-            android:textColorHint="@color/white"
             android:minHeight="48dp"
-            android:alpha="0.5"/>
+            android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/white"
+            android:textSize="16sp" />
 
     </LinearLayout>
 

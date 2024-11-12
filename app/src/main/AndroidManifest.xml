@@ -21,13 +21,7 @@
         
         <activity
             android:name=".Map_Offical"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true"/>
         <activity
             android:name=".DashBoard"
             android:exported="true" />
@@ -81,7 +75,13 @@
             android:exported="false" />
         <activity
             android:name=".WelcomeScreen"
-            android:exported="false" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ForgotPassword3"
             android:exported="false" />
