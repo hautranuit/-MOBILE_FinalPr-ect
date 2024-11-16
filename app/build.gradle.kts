@@ -15,6 +15,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -42,27 +43,21 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.circleimageview)
 
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-    implementation("androidx.activity:activity:1.5.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+
+
+    implementation ("org.maplibre.gl:android-sdk:9.2.1")
+
     implementation("com.google.android.gms:play-services-maps:19.0.0")
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.google.maps:google-maps-services:0.18.0")
     implementation("com.google.maps.android:android-maps-utils:2.2.3")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    implementation ("com.mapbox.maps:android:11.7.2")
-    implementation ("com.mapbox.navigation:android:2.15.2")
-    implementation ("com.mapbox.mapboxsdk:mapbox-android-core:3.1.0")
-    implementation ("com.mapbox.mapboxsdk:mapbox-android-plugin-locationlayer:0.11.0")
-    implementation ("com.mapbox.mapboxsdk:mapbox-sdk-services:4.8.0")
-    implementation ("com.mapbox.navigation:android:2.17.1")
-    implementation ("com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0")
-    implementation ("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6")
-    implementation ("com.mapbox.mapboxsdk:mapbox-android-sdk:9.5.0")
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.1.3-2")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+
+
+
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
 }

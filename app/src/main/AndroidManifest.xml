@@ -18,10 +18,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject"
         tools:targetApi="31">
-        
         <activity
-            android:name=".Map_Offical"
-            android:exported="true"/>
+            android:name=".MapTiler"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".DashBoard"
             android:exported="true" />
@@ -42,7 +48,7 @@
             android:exported="true" />
         <activity
             android:name=".SettingsScreen"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".SignUpYourname"
             android:exported="false" />
@@ -75,13 +81,7 @@
             android:exported="false" />
         <activity
             android:name=".WelcomeScreen"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".ForgotPassword3"
             android:exported="false" />
