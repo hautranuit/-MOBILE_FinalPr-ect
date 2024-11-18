@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,6 +29,7 @@ public class LoginScreen extends AppCompatActivity {
     ImageButton img_bt_signup_email;
     EditText email_input, password_input;
     Button button_login;
+    TextView forgot_password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class LoginScreen extends AppCompatActivity {
         email_input = findViewById(R.id.email_input);
         password_input = findViewById(R.id.password_input);
         button_login = findViewById(R.id.button_login);
+        forgot_password = findViewById(R.id.forgot_password);
 
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +91,14 @@ public class LoginScreen extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        forgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginScreen.this, ForgotPassword1.class);
+                startActivity(intent);
+            }
         });
     }
 }

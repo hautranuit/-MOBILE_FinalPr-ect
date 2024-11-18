@@ -4,6 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface restful_api {
     @POST("/authentication/login")
@@ -20,4 +21,16 @@ public interface restful_api {
     // Endpoint lưu người dùng
     @POST("/authentication/accounts")
     Call<String> saveUser(@Body User user);
+
+    //Gửi mã OTP đến email
+    @POST("/authentication/send-otp")
+    Call<Void> sendOtp(@Query("email") String email);
+
+    //Xác nhận OTP
+    @POST("/authentication/verify-otp")
+    Call<ResponseMessage> verifyOtp(
+            @Query("email") String email,
+            @Query("otp") String otp,
+            @Query("newpassword") String newpassword
+    );
 }
