@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main"
     tools:context=".Settings_helpCenter">
 
     <RelativeLayout
@@ -53,22 +54,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="75dp"
-            app:cardCornerRadius="20dp"
+            app:cardCornerRadius="25dp"
             app:cardElevation="4dp">
 
-            <EditText
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:layout_marginStart="25dp"
-                android:hint="What support do you need?"
-                android:padding="12dp" />
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="5dp"
-                android:src="@drawable/ic_search"/>
+                android:padding="7dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:layout_marginStart="25dp"
+                    android:hint="What support do you need?"
+                    android:padding="12dp" />
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/ic_search"/>
+            </RelativeLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>
 
@@ -106,10 +113,10 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_flagvietnam" />
+                    android:src="@drawable/ic_account"/>
 
                 <TextView
-                    android:id="@+id/vietnamese"
+                    android:id="@+id/account"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -139,10 +146,10 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_flagengland" />
+                    android:src="@drawable/ic_phone"/>
 
                 <TextView
-                    android:id="@+id/english"
+                    android:id="@+id/app_issues"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -173,10 +180,10 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_flagchina" />
+                    android:src="@drawable/ic_warning" />
 
                 <TextView
-                    android:id="@+id/chinese"
+                    android:id="@+id/safe_in"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -207,10 +214,10 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_flagspain" />
+                    android:src="@drawable/ic_map" />
 
                 <TextView
-                    android:id="@+id/spanish"
+                    android:id="@+id/iss_map"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -234,7 +241,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="12dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="100dp"
         android:background="@drawable/beige_rounded_corner_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

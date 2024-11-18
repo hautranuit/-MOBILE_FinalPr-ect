@@ -43,6 +43,8 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.circleimageview)
 
+    implementation ("androidx.cardview:cardview:1.0.0")
+
 
 
 

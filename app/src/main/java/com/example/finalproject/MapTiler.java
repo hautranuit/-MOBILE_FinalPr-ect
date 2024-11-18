@@ -3,6 +3,7 @@ package com.example.finalproject;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -22,6 +23,8 @@ public class MapTiler extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Debug log để kiểm tra
+        Log.d("MapTitler", "onCreate() chạy thành công");
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_map_tiler);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -57,6 +60,7 @@ public class MapTiler extends AppCompatActivity {
                         .build());
             });
         });
+
     }
 
     private String getMapTilerKey() {
