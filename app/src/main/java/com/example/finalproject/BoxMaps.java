@@ -143,7 +143,7 @@ public class BoxMaps extends AppCompatActivity {
                 public void accept(Expected<RouteLineError, RouteSetValue> routeLineErrorRouteSetValueExpected) {
                     mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, style -> {
                         if (style != null) {
-                            // Perform operations with the style
+                            routeLineView.renderRouteDrawData(style, routeLineErrorRouteSetValueExpected);
                         }
                     });
                 }
@@ -239,7 +239,7 @@ public class BoxMaps extends AppCompatActivity {
         public void onRouteProgressChanged(@NonNull RouteProgress routeProgress) {
             mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, style -> {
                 if (style != null) {
-                    // Perform operations with the style
+                    routeArrowView.renderManeuverUpdate(style, routeArrowApi.addUpcomingManeuverArrow(routeProgress));
                 }
             });
 
