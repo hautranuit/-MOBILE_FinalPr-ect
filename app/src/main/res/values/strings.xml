@@ -60,6 +60,8 @@
     <string name="Attribute">Attribute</string>
     <string name="Start_Date">Start_Date</string>
     <string name="End_Date">End_Date</string>
+
     <string name="mapbox_access_token">sk.eyJ1IjoiaGF1dHJhbnVpdCIsImEiOiJjbTNiODBtdnUwdGZ1MmxzYWJ6Z2J5YnZuIn0.G2fK3RKmlNa12midITFaaA</string>
+
 
 </resources>

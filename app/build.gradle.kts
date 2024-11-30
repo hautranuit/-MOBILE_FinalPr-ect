@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    id ("com.android.application")
 }
 
 android {
@@ -46,14 +45,6 @@ dependencies {
     implementation(libs.circleimageview)
 
 
-
-
-    implementation ("org.maplibre.gl:android-sdk:9.2.1")
-
-    implementation("com.google.android.gms:play-services-maps:19.0.0")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
-    implementation("com.google.maps:google-maps-services:0.18.0")
-    implementation("com.google.maps.android:android-maps-utils:2.2.3")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -61,20 +52,7 @@ dependencies {
 
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
 
-    //Mapsforge dependencies
-    implementation ("org.mapsforge:mapsforge-core:0.18.0")
-    implementation ("org.mapsforge:mapsforge-map:0.18.0")
-    implementation ("org.mapsforge:mapsforge-map-reader:0.18.0")
-    implementation ("org.mapsforge:mapsforge-themes:0.18.0")
-    implementation ("net.sf.kxml:kxml2:2.3.0")
-    implementation ("org.mapsforge:mapsforge-map-android:0.18.0")
-    implementation ("com.caverock:androidsvg:1.4")
-    implementation ("org.mapsforge:mapsforge-core:0.18.0")
-    implementation ("org.mapsforge:mapsforge-poi:0.18.0")
-    implementation ("org.mapsforge:mapsforge-poi-android:0.18.0")
-    implementation ("org.mapsforge:sqlite-android:0.18.0")
-    implementation ("org.mapsforge:sqlite-android:0.18.0:natives-armeabi-v7a")
-    implementation ("org.mapsforge:sqlite-android:0.18.0:natives-arm64-v8a")
-    implementation ("org.mapsforge:sqlite-android:0.18.0:natives-x86")
-    implementation ("org.mapsforge:sqlite-android:0.18.0:natives-x86_64")
+    implementation ("com.mapbox.navigation:android:2.17.1")
+    implementation ("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6")
+
 }

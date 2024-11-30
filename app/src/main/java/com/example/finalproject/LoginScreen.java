@@ -61,7 +61,7 @@ public class LoginScreen extends AppCompatActivity {
                                 String token = response.body().getToken();
                                 Toast.makeText(LoginScreen.this,"Login successful", Toast.LENGTH_SHORT).show();
 
-                                Intent intent = new Intent(LoginScreen.this, Map_1.class);
+                                Intent intent = new Intent(LoginScreen.this, BoxMaps.class);
                                 startActivity(intent);
                                 finish();
                             } else {
