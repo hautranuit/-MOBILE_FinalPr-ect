@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Location;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -23,7 +25,6 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
 import com.mapbox.maps.MapboxMap;
-import com.mapbox.maps.CameraState;
 
 public class PotholeReporter {
     private final Context context;
@@ -76,13 +77,13 @@ public class PotholeReporter {
                 Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon);
 
                 // Thay đổi kích thước của ảnh (giảm kích thước ảnh ban đầu)
-                Bitmap scaledBitmap = scaleBitmap(bitmap, 0.01f);  // Giảm kích thước ảnh xuống 10% (thay đổi tỷ lệ theo yêu cầu)
+                Bitmap scaledBitmap = scaleBitmap(bitmap, 0.1f);  // Giảm kích thước ảnh xuống 10%
 
                 // Cấu hình PointAnnotationOptions với kích thước ban đầu đã giảm
                 PointAnnotationOptions options = new PointAnnotationOptions()
                         .withPoint(point)
                         .withIconImage(scaledBitmap)
-                        .withIconSize(0.1); // Kích thước biểu tượng ban đầu nhỏ hơn
+                        .withIconSize(0.1f); // Kích thước biểu tượng ban đầu nhỏ hơn
 
                 // Thêm marker vào bản đồ
                 pointAnnotationManager.create(options);
@@ -97,6 +98,9 @@ public class PotholeReporter {
                             double zoom = mapView.getMapboxMap().getCameraState().getZoom(); // Truy cập zoom qua getCameraState()
                             updateIconSize(zoom);
                         }
+                        else {
+                            Toast.makeText(context, "Camera state is null", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     lastCameraUpdateTime = currentTime; // Cập nhật thời gian
                 });
@@ -104,39 +108,47 @@ public class PotholeReporter {
         });
     }
 
+    // Phương thức để thay đổi kích thước Bitmap sử dụng Matrix
+    public static Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+    }
+
+    // Thay đổi phương thức scaleBitmap để sử dụng Matrix
     private Bitmap scaleBitmap(Bitmap originalBitmap, float scaleFactor) {
         int width = originalBitmap.getWidth();
         int height = originalBitmap.getHeight();
         int newWidth = (int) (width * scaleFactor);
         int newHeight = (int) (height * scaleFactor);
-        return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, false);
+        return getResizedBitmap(originalBitmap, newHeight, newWidth);
     }
 
     private void updateIconSize(double zoom) {
         if (pointAnnotationManager != null && point != null) {
-            // Giới hạn kích thước icon (tối thiểu và tối đa)
-            double minSize = 0.05; // Kích thước tối thiểu của biểu tượng (giảm xuống so với trước)
-            double maxSize = 0.5; // Kích thước tối đa của biểu tượng
-
-            // Tính toán kích thước mới dựa trên mức zoom
-            double newSize = Math.max(minSize, Math.min(maxSize, (zoom / 22.0) * 2.0)); // Điều chỉnh theo zoom, với giới hạn
+            double minSize = 0.05;
+            double maxSize = 0.5;
+            double newSize = Math.max(minSize, Math.min(maxSize, (zoom / 22.0) * 2.0));
 
             // Tạo biểu tượng từ tài nguyên drawable
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon);
 
             // Thay đổi kích thước của ảnh khi zoom
-            Bitmap scaledBitmap = scaleBitmap(bitmap, (float) newSize); // Chuyển đổi newSize từ double sang float
+            Bitmap scaledBitmap = scaleBitmap(bitmap, (float) newSize);
 
             // Cấu hình PointAnnotationOptions với kích thước mới
             PointAnnotationOptions options = new PointAnnotationOptions()
                     .withPoint(point)
                     .withIconImage(scaledBitmap)
-                    .withIconSize((float) newSize);  // Chuyển đổi newSize từ double sang float
+                    .withIconSize((float) newSize);
 
             // Xóa tất cả các annotation hiện tại và thêm lại marker vào bản đồ với kích thước mới
             pointAnnotationManager.deleteAll();
             pointAnnotationManager.create(options);
         }
     }
-
 }

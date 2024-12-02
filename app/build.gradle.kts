@@ -33,7 +33,6 @@ android {
         viewBinding = true
     }
 }
-
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -54,6 +53,5 @@ dependencies {
 
     implementation ("com.mapbox.navigation:android:2.17.1")
     implementation ("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6")
-
 
 }
