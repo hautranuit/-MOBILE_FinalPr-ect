@@ -33,13 +33,13 @@ public class PotholeReporter {
     private Point point;  // Lưu trữ tọa độ của pothole
     private long lastCameraUpdateTime = 0;  // Để kiểm tra thời gian thay đổi camera
 
-    private final MongoDBClient mongoDBClient;
+    //private final MongoDBClient mongoDBClient;
 
     public PotholeReporter(Context context, MapView mapView) {
         this.context = context;
         this.mapView = mapView;
-        this.mongoDBClient = new MongoDBClient("mongodb+srv://hautn:hauthpthd2004@androidproject.0rka3.mongodb.net/?retryWrites=true&w=majority&appName=AndroidProject",
-                "PotholeDB", "Potholes");
+        //this.mongoDBClient = new MongoDBClient("mongodb+srv://hautn:hauthpthd2004@androidproject.0rka3.mongodb.net/?retryWrites=true&w=majority&appName=AndroidProject",
+                //"PotholeDB", "Potholes");
     }
 
     public void reportPothole() {
@@ -57,7 +57,7 @@ public class PotholeReporter {
                     double latitude = location.getLatitude();
 
                     // Lưu vị trí vào MongoDB
-                    mongoDBClient.insertPothole(longitude, latitude);
+                    //mongoDBClient.insertPothole(longitude, latitude);
 
                     // Thêm marker trên bản đồ
                     addMarker(Point.fromLngLat(longitude, latitude));
@@ -90,7 +90,7 @@ public class PotholeReporter {
                 PointAnnotationOptions options = new PointAnnotationOptions()
                         .withPoint(point)
                         .withIconImage(scaledBitmap)
-                        .withIconSize(0.1f); // Kích thước biểu tượng ban đầu nhỏ hơn
+                        .withIconSize(0.5f); // Kích thước biểu tượng ban đầu nhỏ hơn
 
                 // Thêm marker vào bản đồ
                 pointAnnotationManager.create(options);
@@ -138,7 +138,7 @@ public class PotholeReporter {
     private void updateIconSize(double zoom) {
         if (pointAnnotationManager != null && point != null) {
             double minSize = 0.05;
-            double maxSize = 0.5;
+            double maxSize = 1;
             double newSize = Math.max(minSize, Math.min(maxSize, (zoom / 22.0) * 2.0));
 
             // Tạo biểu tượng từ tài nguyên drawable

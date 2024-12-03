@@ -274,9 +274,9 @@ public class BoxMaps extends AppCompatActivity {
         setRoute = findViewById(R.id.setRoute);
         mapboxManeuverView = findViewById(R.id.maneuverView);
 
-        MongoDBClient mongoDBClient = new MongoDBClient("mongodb+srv://hautn:hauthpthd2004@androidproject.0rka3.mongodb.net/?retryWrites=true&w=majority&appName=AndroidProject",
-                "PotholeDB", "Potholes");
-        loadPotholes(mongoDBClient);
+        //MongoDBClient mongoDBClient = new MongoDBClient("mongodb+srv://hautn:hauthpthd2004@androidproject.0rka3.mongodb.net/?retryWrites=true&w=majority&appName=AndroidProject",
+                //"PotholeDB", "Potholes");
+        //loadPotholes(mongoDBClient);
 
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(BoxMaps.this).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(BoxMaps.this).build());
