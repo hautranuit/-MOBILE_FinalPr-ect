@@ -274,6 +274,10 @@ public class BoxMaps extends AppCompatActivity {
         setRoute = findViewById(R.id.setRoute);
         mapboxManeuverView = findViewById(R.id.maneuverView);
 
+        MongoDBClient mongoDBClient = new MongoDBClient("mongodb+srv://hautn:hauthpthd2004@androidproject.0rka3.mongodb.net/?retryWrites=true&w=majority&appName=AndroidProject",
+                "PotholeDB", "Potholes");
+        loadPotholes(mongoDBClient);
+
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(BoxMaps.this).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(BoxMaps.this).build());
 
@@ -537,6 +541,16 @@ public class BoxMaps extends AppCompatActivity {
         mapboxNavigation.unregisterLocationObserver(locationObserver);
         potholeDetector.stopDetection();
     }
+    private void loadPotholes(MongoDBClient mongoDBClient) {
+        mongoDBClient.getPotholeCollection().find().forEach(document -> {
+            double longitude = document.getDouble("longitude");
+            double latitude = document.getDouble("latitude");
+            Point point = Point.fromLngLat(longitude, latitude);
 
+            runOnUiThread(() -> {
+                potholeReporter.addMarker(point);
+            });
+        });
+    }
 
 }

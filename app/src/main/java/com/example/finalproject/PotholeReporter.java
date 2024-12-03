@@ -33,17 +33,18 @@ public class PotholeReporter {
     private Point point;  // Lưu trữ tọa độ của pothole
     private long lastCameraUpdateTime = 0;  // Để kiểm tra thời gian thay đổi camera
 
+    private final MongoDBClient mongoDBClient;
+
     public PotholeReporter(Context context, MapView mapView) {
         this.context = context;
         this.mapView = mapView;
+        this.mongoDBClient = new MongoDBClient("mongodb+srv://hautn:hauthpthd2004@androidproject.0rka3.mongodb.net/?retryWrites=true&w=majority&appName=AndroidProject",
+                "PotholeDB", "Potholes");
     }
 
     public void reportPothole() {
-        // Kiểm tra quyền
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Nếu không có quyền, yêu cầu quyền từ Activity hoặc Fragment
-            throw new SecurityException("Location permission not granted. Ensure permissions are requested.");
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            throw new SecurityException("Location permission not granted.");
         }
 
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(context);
@@ -52,19 +53,25 @@ public class PotholeReporter {
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
                 if (location != null) {
-                    point = Point.fromLngLat(location.getLongitude(), location.getLatitude());
-                    addMarker(point);
+                    double longitude = location.getLongitude();
+                    double latitude = location.getLatitude();
+
+                    // Lưu vị trí vào MongoDB
+                    mongoDBClient.insertPothole(longitude, latitude);
+
+                    // Thêm marker trên bản đồ
+                    addMarker(Point.fromLngLat(longitude, latitude));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Xử lý lỗi
+                Toast.makeText(context, "Failed to get location: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void addMarker(Point point) {
+    public void addMarker(Point point) {
         mapView.getMapboxMap().getStyle(style -> {
             if (style != null) {
                 // Lấy AnnotationPlugin từ MapView
