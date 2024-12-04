@@ -54,5 +54,6 @@ dependencies {
     implementation ("com.mapbox.navigation:android:2.17.1")
     implementation ("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6")
     implementation ("org.mongodb:mongodb-driver-sync:4.5.1")
+    implementation ("org.mongodb:bson:4.5.1")
 
 }

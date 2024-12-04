@@ -9,6 +9,7 @@ import static com.mapbox.navigation.base.extensions.RouteOptionsExtensions.apply
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -274,9 +275,8 @@ public class BoxMaps extends AppCompatActivity {
         setRoute = findViewById(R.id.setRoute);
         mapboxManeuverView = findViewById(R.id.maneuverView);
 
-        //MongoDBClient mongoDBClient = new MongoDBClient("mongodb+srv://hautn:hauthpthd2004@androidproject.0rka3.mongodb.net/?retryWrites=true&w=majority&appName=AndroidProject",
-                //"PotholeDB", "Potholes");
-        //loadPotholes(mongoDBClient);
+        potholeReporter = new PotholeReporter(this, mapView);
+        loadPotholes();
 
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(BoxMaps.this).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(BoxMaps.this).build());
@@ -541,16 +541,22 @@ public class BoxMaps extends AppCompatActivity {
         mapboxNavigation.unregisterLocationObserver(locationObserver);
         potholeDetector.stopDetection();
     }
-    private void loadPotholes(MongoDBClient mongoDBClient) {
-        mongoDBClient.getPotholeCollection().find().forEach(document -> {
-            double longitude = document.getDouble("longitude");
-            double latitude = document.getDouble("latitude");
-            Point point = Point.fromLngLat(longitude, latitude);
+    private void loadPotholes() {
+        Cursor cursor = potholeReporter.getAllPotholes();
+        while (cursor.moveToNext()) {
+            int longitudeIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LONGITUDE);
+            int latitudeIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LATITUDE);
 
-            runOnUiThread(() -> {
-                potholeReporter.addMarker(point);
-            });
-        });
+            if (longitudeIndex != -1 && latitudeIndex != -1) {
+                double longitude = cursor.getDouble(longitudeIndex);
+                double latitude = cursor.getDouble(latitudeIndex);
+                Point point = Point.fromLngLat(longitude, latitude);
+
+                runOnUiThread(() -> {
+                    potholeReporter.addMarker(point);
+                });
+            }
+        }
+        cursor.close();
     }
-
 }

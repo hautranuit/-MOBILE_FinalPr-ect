@@ -1,6 +1,7 @@
 package com.example.finalproject;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -25,6 +26,8 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
 import com.mapbox.maps.MapboxMap;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 public class PotholeReporter {
     private final Context context;
@@ -33,13 +36,12 @@ public class PotholeReporter {
     private Point point;  // Lưu trữ tọa độ của pothole
     private long lastCameraUpdateTime = 0;  // Để kiểm tra thời gian thay đổi camera
 
-    //private final MongoDBClient mongoDBClient;
+    private final DatabaseHelper dbHelper;
 
     public PotholeReporter(Context context, MapView mapView) {
         this.context = context;
         this.mapView = mapView;
-        //this.mongoDBClient = new MongoDBClient("mongodb+srv://hautn:hauthpthd2004@androidproject.0rka3.mongodb.net/?retryWrites=true&w=majority&appName=AndroidProject",
-                //"PotholeDB", "Potholes");
+        this.dbHelper = new DatabaseHelper(context);
     }
 
     public void reportPothole() {
@@ -56,8 +58,8 @@ public class PotholeReporter {
                     double longitude = location.getLongitude();
                     double latitude = location.getLatitude();
 
-                    // Lưu vị trí vào MongoDB
-                    //mongoDBClient.insertPothole(longitude, latitude);
+                    // Lưu vị trí vào SQLite
+                    insertPothole(longitude, latitude);
 
                     // Thêm marker trên bản đồ
                     addMarker(Point.fromLngLat(longitude, latitude));
@@ -114,7 +116,17 @@ public class PotholeReporter {
             }
         });
     }
-
+    private void insertPothole(double longitude, double latitude) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_LONGITUDE, longitude);
+        values.put(DatabaseHelper.COLUMN_LATITUDE, latitude);
+        db.insert(DatabaseHelper.TABLE_NAME, null, values);
+    }
+    public Cursor getAllPotholes() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        return db.query(DatabaseHelper.TABLE_NAME, null, null, null, null, null, null);
+    }
     // Phương thức để thay đổi kích thước Bitmap sử dụng Matrix
     public static Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
         int width = bm.getWidth();
