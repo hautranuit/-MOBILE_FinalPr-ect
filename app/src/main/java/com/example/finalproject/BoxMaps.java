@@ -8,6 +8,7 @@ import static com.mapbox.navigation.base.extensions.RouteOptionsExtensions.apply
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -106,6 +107,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
@@ -274,6 +276,19 @@ public class BoxMaps extends AppCompatActivity {
 
         potholeReporter = new PotholeReporter(this, mapView);
         loadPotholes();
+
+        // Tìm CircleImageView
+        CircleImageView profileImage = findViewById(R.id.profileImage);
+
+        // Đặt sự kiện click
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Chuyển sang Activity mới
+                Intent intent = new Intent(BoxMaps.this, MainComponent.class);
+                startActivity(intent);
+            }
+        });
 
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(BoxMaps.this).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(BoxMaps.this).build());
