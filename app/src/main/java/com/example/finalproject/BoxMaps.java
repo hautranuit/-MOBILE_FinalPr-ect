@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -112,8 +111,6 @@ import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
 import kotlin.jvm.functions.Function1;
-
-import com.mapbox.maps.Style;
 
 public class BoxMaps extends AppCompatActivity {
     private PotholeDetector potholeDetector;
@@ -468,22 +465,6 @@ public class BoxMaps extends AppCompatActivity {
                 });
             }
         });
-        potholeReporter = new PotholeReporter(this, mapView);
-        potholeDetector = new PotholeDetector(this, new PotholeDetector.PotholeCallback() {
-            @Override
-            public void onPotholeDetected() {
-                runOnUiThread(() -> {
-                    Toast.makeText(BoxMaps.this, "Pothole detected! Reporting...", Toast.LENGTH_SHORT).show();
-                    potholeReporter.reportPothole();
-                });
-            }
-        });
-        potholeDetector.startDetection();
-        Button reportButton = findViewById(R.id.reportButton); // Thay R.id.reportButton bằng ID thực tế của nút
-        reportButton.setOnClickListener(view -> {
-            potholeReporter.reportPothole();
-        });
-
     }
 
     @SuppressLint("MissingPermission")
@@ -539,7 +520,6 @@ public class BoxMaps extends AppCompatActivity {
         mapboxNavigation.onDestroy();
         mapboxNavigation.unregisterRoutesObserver(routesObserver);
         mapboxNavigation.unregisterLocationObserver(locationObserver);
-        potholeDetector.stopDetection();
     }
     private void loadPotholes() {
         Cursor cursor = potholeReporter.getAllPotholes();
