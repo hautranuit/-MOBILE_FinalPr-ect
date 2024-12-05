@@ -39,7 +39,6 @@
             android:layout_alignParentStart="true"
             android:layout_marginEnd="5dp"
             android:src="@drawable/doraemon"
-
             app:civ_border_width="2dp" />
 
         <!-- Search Input -->
@@ -88,39 +87,48 @@
         android:layout_below="@id/Search" />
 
     <LinearLayout
-    android:id="@+id/Button"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:layout_marginBottom="16dp"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:paddingHorizontal="16dp">
-
-    <!-- Report Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/reportButton"
-        android:layout_width="0dp"
+        android:id="@+id/Button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginEnd="8dp"
-        android:text="Report"
-        android:textColor="@android:color/white"
-        app:iconGravity="textStart"
-        app:iconPadding="8dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingHorizontal="16dp">
 
-    <!-- Set Route Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/setRoute"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="8dp"
-        android:text="Set Route"
-        android:textColor="@android:color/white"
-        app:iconGravity="textStart"
-        app:iconPadding="8dp" />
-</LinearLayout>
+        <!-- Email Input -->
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter your email"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Report Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reportButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Report"
+            android:textColor="@android:color/white"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp" />
+
+        <!-- Set Route Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/setRoute"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Set Route"
+            android:textColor="@android:color/white"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp" />
+    </LinearLayout>
 
     <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -131,4 +139,5 @@
         android:layout_alignParentEnd="true"
         android:layout_above="@id/Button"
         android:layout_margin="16sp" />
+
 </RelativeLayout>

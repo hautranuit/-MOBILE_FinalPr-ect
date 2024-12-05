@@ -8,6 +8,7 @@ import static com.mapbox.navigation.base.extensions.RouteOptionsExtensions.apply
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,13 +19,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -123,6 +128,9 @@ public class BoxMaps extends AppCompatActivity {
     private final NavigationLocationProvider navigationLocationProvider = new NavigationLocationProvider();
     private MapboxRouteLineView routeLineView;
     private MapboxRouteLineApi routeLineApi;
+    private EditText emailEditText;
+    private Button reportButton;
+    private DatabaseHelper dbHelper;
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -276,6 +284,19 @@ public class BoxMaps extends AppCompatActivity {
 
         potholeReporter = new PotholeReporter(this, mapView);
         loadPotholes();
+
+        emailEditText = findViewById(R.id.emailEditText);
+        reportButton = findViewById(R.id.reportButton);
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showReportDialog();
+            }
+        });
+        dbHelper = new DatabaseHelper(this);
+
+        //printDatabaseData();
+        //deleteAllDatabaseData();
 
         // Tìm CircleImageView
         CircleImageView profileImage = findViewById(R.id.profileImage);
@@ -536,6 +557,28 @@ public class BoxMaps extends AppCompatActivity {
         mapboxNavigation.unregisterRoutesObserver(routesObserver);
         mapboxNavigation.unregisterLocationObserver(locationObserver);
     }
+    private void showReportDialog() {
+        String[] sizes = {"Small", "Medium", "Big"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Pothole Size")
+                .setItems(sizes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String userEmail = emailEditText.getText().toString();
+                        if (userEmail.isEmpty()) {
+                            Toast.makeText(BoxMaps.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String potholeSize = sizes[which].toLowerCase();
+                            reportPothole(userEmail, potholeSize);
+                        }
+                    }
+                });
+        builder.create().show();
+    }
+    private void reportPothole(String email, String size) {
+        potholeReporter.reportPothole(email, size);
+    }
     private void loadPotholes() {
         Cursor cursor = potholeReporter.getAllPotholes();
         while (cursor.moveToNext()) {
@@ -547,11 +590,44 @@ public class BoxMaps extends AppCompatActivity {
                 double latitude = cursor.getDouble(latitudeIndex);
                 Point point = Point.fromLngLat(longitude, latitude);
 
-                runOnUiThread(() -> {
-                    potholeReporter.addMarker(point);
-                });
+                runOnUiThread(() -> potholeReporter.addMarker(point));
             }
         }
         cursor.close();
     }
+    private void printDatabaseData() {
+        Cursor cursor = dbHelper.getAllData();
+        if (cursor.getCount() == 0) {
+            Log.d("DatabaseData", "No data found");
+            return;
+        }
+
+        // Kiểm tra chỉ số của các cột
+        int idIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_ID);
+        int longitudeIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LONGITUDE);
+        int latitudeIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LATITUDE);
+        int emailIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_EMAIL);
+        int sizeIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_SIZE);
+
+        if (idIndex == -1 || longitudeIndex == -1 || latitudeIndex == -1 || emailIndex == -1 || sizeIndex == -1) {
+            Log.e("DatabaseData", "One or more columns are missing");
+            return;
+        }
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(idIndex);
+            double longitude = cursor.getDouble(longitudeIndex);
+            double latitude = cursor.getDouble(latitudeIndex);
+            String email = cursor.getString(emailIndex);
+            String size = cursor.getString(sizeIndex);
+
+            Log.d("DatabaseData", "ID: " + id + ", Longitude: " + longitude + ", Latitude: " + latitude + ", Email: " + email + ", Size: " + size);
+        }
+        cursor.close();
+    }
+    private void deleteAllDatabaseData() {
+        dbHelper.deleteAllData();
+        Toast.makeText(this, "All data deleted", Toast.LENGTH_SHORT).show();
+    }
+
 }

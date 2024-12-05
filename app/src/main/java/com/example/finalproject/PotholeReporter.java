@@ -44,7 +44,7 @@ public class PotholeReporter {
         this.dbHelper = new DatabaseHelper(context);
     }
 
-    public void reportPothole() {
+    public void reportPothole(String email, String size) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             throw new SecurityException("Location permission not granted.");
         }
@@ -58,10 +58,10 @@ public class PotholeReporter {
                     double longitude = location.getLongitude();
                     double latitude = location.getLatitude();
 
-                    // Lưu vị trí vào SQLite
-                    insertPothole(longitude, latitude);
+                    // Insert the pothole with email and size
+                    insertPothole(longitude, latitude, email, size);
 
-                    // Thêm marker trên bản đồ
+                    // Add marker on the map
                     addMarker(Point.fromLngLat(longitude, latitude));
                 }
             }
@@ -116,11 +116,13 @@ public class PotholeReporter {
             }
         });
     }
-    private void insertPothole(double longitude, double latitude) {
+    private void insertPothole(double longitude, double latitude, String email, String size) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_LONGITUDE, longitude);
         values.put(DatabaseHelper.COLUMN_LATITUDE, latitude);
+        values.put(DatabaseHelper.COLUMN_EMAIL, email); // Insert email
+        values.put(DatabaseHelper.COLUMN_SIZE, size); // Insert size
         db.insert(DatabaseHelper.TABLE_NAME, null, values);
     }
     public Cursor getAllPotholes() {
