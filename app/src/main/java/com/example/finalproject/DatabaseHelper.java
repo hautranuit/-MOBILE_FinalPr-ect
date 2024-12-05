@@ -37,6 +37,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_SIZE + " TEXT");
         }
     }
+    public int[] getPotholeCounts() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Bộ đếm cho ba loại ổ gà
+        int smallCount = 0, mediumCount = 0, bigCount = 0;
+
+        // Truy vấn đếm số lượng theo từng loại kích thước
+        Cursor cursor = db.rawQuery(
+                "SELECT size, COUNT(*) as count FROM " + TABLE_NAME + " GROUP BY size", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String size = cursor.getString(cursor.getColumnIndex("size"));
+                int count = cursor.getInt(cursor.getColumnIndex("count"));
+
+                // Gán số lượng theo kích thước
+                if (size != null) {
+                    switch (size.toLowerCase()) {
+                        case "small":
+                            smallCount = count;
+                            break;
+                        case "medium":
+                            mediumCount = count;
+                            break;
+                        case "big":
+                            bigCount = count;
+                            break;
+                    }
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close();
+
+        return new int[]{smallCount, mediumCount, bigCount};
+    }
+
     // Phương thức lấy tất cả dữ liệu từ database
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();

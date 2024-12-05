@@ -595,6 +595,19 @@ public class BoxMaps extends AppCompatActivity {
         }
         cursor.close();
     }
+    private void loadPotholeData() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+        // Lấy dữ liệu số lượng 3 loại ổ gà
+        int[] counts = databaseHelper.getPotholeCounts();
+        int smallCount = counts[0];
+        int mediumCount = counts[1];
+        int bigCount = counts[2];
+
+        // Gửi dữ liệu qua Dashboard (hoặc hiển thị trực tiếp)
+        Log.d("PotholeCounts", "Small: " + smallCount + ", Medium: " + mediumCount + ", Big: " + bigCount);
+    }
+
     private void printDatabaseData() {
         Cursor cursor = dbHelper.getAllData();
         if (cursor.getCount() == 0) {

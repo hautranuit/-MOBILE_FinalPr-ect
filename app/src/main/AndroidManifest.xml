@@ -26,7 +26,12 @@
             android:exported="false" />
         <activity
             android:name=".DashBoard"
-            android:exported="false" />
+            android:exported="true"> <!-- Đặt exported thành true vì đây là launcher activity -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Settings_helpCenter"
             android:exported="false" />
@@ -89,13 +94,8 @@
             android:exported="false" />
         <activity
             android:name=".BoxMaps"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="false" />

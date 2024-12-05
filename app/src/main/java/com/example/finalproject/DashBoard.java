@@ -29,10 +29,14 @@ public class DashBoard extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        int smallCount = getIntent().getIntExtra("smallCount", 0);
+        int mediumCount = getIntent().getIntExtra("mediumCount", 0);
+        int bigCount = getIntent().getIntExtra("bigCount", 0);
+
 
         // Thiết lập biểu đồ
         setupBarChart();
-        setupPieChart();
+        setupPieChart(smallCount, mediumCount, bigCount);
         setupLineChart();
     }
 
@@ -55,25 +59,21 @@ public class DashBoard extends AppCompatActivity {
         barChart.invalidate(); // Refresh biểu đồ
     }
 
-    private void setupPieChart() {
+    private void setupPieChart(int smallCount, int mediumCount, int bigCount) {
         PieChart pieChart = findViewById(R.id.pie_chart);
         List<PieEntry> entries = new ArrayList<>();
-        Random random = new Random();
 
-        // Tạo dữ liệu ngẫu nhiên cho PieChart
-        for (int i = 0; i < 5; i++) {
-            float value = random.nextFloat() * 100;
-            entries.add(new PieEntry(value, "Category " + i));
-        }
+        entries.add(new PieEntry(smallCount, "Small"));
+        entries.add(new PieEntry(mediumCount, "Medium"));
+        entries.add(new PieEntry(bigCount, "Big"));
 
-        PieDataSet dataSet = new PieDataSet(entries, "Categories");
+        PieDataSet dataSet = new PieDataSet(entries, "Pothole Sizes");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         PieData data = new PieData(dataSet);
 
         pieChart.setData(data);
-        pieChart.invalidate(); // Refresh biểu đồ
+        pieChart.invalidate();
     }
-
     private void setupLineChart() {
         LineChart lineChart = findViewById(R.id.line_chart);
         List<Entry> entries = new ArrayList<>();
