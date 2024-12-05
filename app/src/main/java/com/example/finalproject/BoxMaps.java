@@ -1,5 +1,6 @@
 package com.example.finalproject;
 
+
 import static com.mapbox.maps.plugin.animation.CameraAnimationsUtils.getCamera;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.addOnMapClickListener;
 import static com.mapbox.maps.plugin.gestures.GesturesUtils.getGestures;
@@ -118,6 +119,8 @@ import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
 import kotlin.jvm.functions.Function1;
+import com.example.finalproject.DashBoard;
+
 
 public class BoxMaps extends AppCompatActivity {
     private PotholeDetector potholeDetector;
@@ -606,7 +609,18 @@ public class BoxMaps extends AppCompatActivity {
 
         // Gửi dữ liệu qua Dashboard (hoặc hiển thị trực tiếp)
         Log.d("PotholeCounts", "Small: " + smallCount + ", Medium: " + mediumCount + ", Big: " + bigCount);
+
+        // Truyền dữ liệu sang Dashboard Activity
+        Intent intent = new Intent(BoxMaps.this, DashBoard.class);
+        intent.putExtra("smallCount", smallCount);
+        intent.putExtra("mediumCount", mediumCount);
+        intent.putExtra("bigCount", bigCount);
+
+        // Bắt đầu Dashboard activity
+        startActivity(intent);
+        finish(); // Đóng BoxMaps nếu không cần quay lại
     }
+
 
     private void printDatabaseData() {
         Cursor cursor = dbHelper.getAllData();

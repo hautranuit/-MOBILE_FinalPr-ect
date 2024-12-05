@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DashBoard extends AppCompatActivity {
+    private PieChart pieChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class DashBoard extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        pieChart = findViewById(R.id.pie_chart);
         int smallCount = getIntent().getIntExtra("smallCount", 0);
         int mediumCount = getIntent().getIntExtra("mediumCount", 0);
         int bigCount = getIntent().getIntExtra("bigCount", 0);

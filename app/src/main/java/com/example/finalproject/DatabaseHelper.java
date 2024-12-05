@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "PotholeDB.db";
@@ -37,41 +38,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_SIZE + " TEXT");
         }
     }
+
     public int[] getPotholeCounts() {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // Bộ đếm cho ba loại ổ gà
         int smallCount = 0, mediumCount = 0, bigCount = 0;
 
         // Truy vấn đếm số lượng theo từng loại kích thước
         Cursor cursor = db.rawQuery(
                 "SELECT size, COUNT(*) as count FROM " + TABLE_NAME + " GROUP BY size", null);
 
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                String size = cursor.getString(cursor.getColumnIndex("size"));
-                int count = cursor.getInt(cursor.getColumnIndex("count"));
+        if (cursor != null) {
+            Log.d("DatabaseHelper", "Cursor contains " + cursor.getCount() + " rows."); // Debug log
+            if (cursor.moveToFirst()) {
+                do {
+                    int sizeIndex = cursor.getColumnIndex("size");
+                    int countIndex = cursor.getColumnIndex("count");
 
-                // Gán số lượng theo kích thước
-                if (size != null) {
-                    switch (size.toLowerCase()) {
-                        case "small":
-                            smallCount = count;
-                            break;
-                        case "medium":
-                            mediumCount = count;
-                            break;
-                        case "big":
-                            bigCount = count;
-                            break;
+                    // Kiểm tra cột có tồn tại không
+                    if (sizeIndex == -1 || countIndex == -1) {
+                        Log.e("DatabaseHelper", "Column not found in the result set.");
+                        break;
                     }
-                }
-            } while (cursor.moveToNext());
+
+                    String size = cursor.getString(sizeIndex);
+                    int count = cursor.getInt(countIndex);
+
+                    if (size != null) {
+                        switch (size.toLowerCase()) {
+                            case "small":
+                                smallCount = count;
+                                break;
+                            case "medium":
+                                mediumCount = count;
+                                break;
+                            case "big":
+                                bigCount = count;
+                                break;
+                        }
+                    }
+                } while (cursor.moveToNext());
+            }
             cursor.close();
+        } else {
+            Log.e("DatabaseHelper", "Cursor is null. Query may have failed.");
         }
 
         db.close();
-
         return new int[]{smallCount, mediumCount, bigCount};
     }
 
@@ -80,6 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
+
     public void deleteAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME);
