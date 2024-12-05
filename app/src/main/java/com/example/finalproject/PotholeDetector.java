@@ -33,8 +33,19 @@ public class PotholeDetector {
             float z = event.values[2];
             double magnitude = Math.sqrt(x * x + y * y + z * z);
 
-            if (magnitude > 15) { // Ngưỡng phát hiện ổ gà
-                callback.onPotholeDetected();
+            String potholeSize = null;
+
+            // Phân loại kích thước ổ gà
+            if (magnitude > 15 && magnitude <= 20) {
+                potholeSize = "small";
+            } else if (magnitude > 20 && magnitude <= 25) {
+                potholeSize = "medium";
+            } else if (magnitude > 25) {
+                potholeSize = "big";
+            }
+
+            if (potholeSize != null) {
+                callback.onPotholeDetected(potholeSize); // Trả về kích thước ổ gà qua callback
             }
         }
 
@@ -44,6 +55,6 @@ public class PotholeDetector {
 
     // Giao diện callback cho sự kiện phát hiện ổ gà
     public interface PotholeCallback {
-        void onPotholeDetected();
+        void onPotholeDetected(String size); // Thay đổi để trả về kích thước ổ gà
     }
 }

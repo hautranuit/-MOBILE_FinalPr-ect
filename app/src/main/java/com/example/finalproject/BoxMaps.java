@@ -298,6 +298,27 @@ public class BoxMaps extends AppCompatActivity {
         });
         dbHelper = new DatabaseHelper(this);
 
+        // Khởi tạo và bắt đầu PotholeDetector
+        potholeDetector = new PotholeDetector(this, new PotholeDetector.PotholeCallback() {
+            @Override
+            public void onPotholeDetected(String size) {
+                String email = emailEditText.getText().toString().trim();
+
+                if (email.isEmpty()) {
+                    Log.e("PotholeDetector", "Email is empty. Cannot report pothole.");
+                    return;
+                }
+
+                Log.d("PotholeDetector", "Pothole detected of size: " + size);
+
+                // Báo cáo ổ gà qua PotholeReporter
+                potholeReporter.reportPothole(email, size);
+            }
+        });
+
+        // Luôn bắt đầu dò ổ gà
+        potholeDetector.startDetection();
+
         //printDatabaseData();
         //deleteAllDatabaseData();
 
@@ -559,6 +580,7 @@ public class BoxMaps extends AppCompatActivity {
         mapboxNavigation.onDestroy();
         mapboxNavigation.unregisterRoutesObserver(routesObserver);
         mapboxNavigation.unregisterLocationObserver(locationObserver);
+        potholeDetector.stopDetection();
     }
     private void showReportDialog() {
         String[] sizes = {"Small", "Medium", "Big"};

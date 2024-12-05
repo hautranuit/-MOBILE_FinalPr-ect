@@ -6,6 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "PotholeDB.db";
     private static final int DATABASE_VERSION = 2; // Updated version
@@ -16,8 +21,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_EMAIL = "email"; // New column for email
     public static final String COLUMN_SIZE = "size"; // New column for size
 
+    private final Context context;
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -29,16 +36,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_EMAIL + " TEXT, " // Add email column
                 + COLUMN_SIZE + " TEXT)"; // Add size column
         db.execSQL(CREATE_TABLE);
+        runSqlSeed(db, "seed.sql");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
-            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_EMAIL + " TEXT");
-            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_SIZE + " TEXT");
+        if (oldVersion < newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            onCreate(db); // Tạo lại bảng và chạy seed
         }
     }
+    // Thực thi file seed SQL từ thư mục assets
+    private void runSqlSeed(SQLiteDatabase db, String fileName) {
+        try {
+            InputStream inputStream = context.getAssets().open(fileName);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder sqlScript = new StringBuilder();
+            String line;
 
+            while ((line = reader.readLine()) != null) {
+                sqlScript.append(line).append("\n");
+            }
+            reader.close();
+
+            // Thực thi từng lệnh SQL trong file seed
+            String[] sqlStatements = sqlScript.toString().split(";");
+            for (String statement : sqlStatements) {
+                if (!statement.trim().isEmpty()) {
+                    db.execSQL(statement.trim());
+                }
+            }
+        } catch (IOException e) {
+            Log.e("DatabaseHelper", "Failed to execute seed file: " + fileName, e);
+        }
+    }
     public int[] getPotholeCounts() {
         SQLiteDatabase db = this.getReadableDatabase();
 
