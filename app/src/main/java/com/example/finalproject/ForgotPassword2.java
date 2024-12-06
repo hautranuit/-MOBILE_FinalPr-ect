@@ -18,6 +18,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.finalproject.api.ApiClient;
 import com.example.finalproject.api.restful_api;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -103,20 +105,29 @@ public class ForgotPassword2 extends AppCompatActivity {
         });
     }
     private void sendOtp(String email) {
-        restfulApi.sendOtp(email).enqueue(new Callback<Void>() {
+        restfulApi.sendOtp(email).enqueue(new Callback<Map<String, String>>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ForgotPassword2.this, "OTP send to your email", Toast.LENGTH_SHORT).show();
+                    // Lấy JSON phản hồi từ API
+                    Map<String, String> responseBody = response.body();
+                    if (responseBody != null && responseBody.containsKey("message")) {
+                        String message = responseBody.get("message"); // Lấy thông điệp từ API
+                        Toast.makeText(ForgotPassword2.this, message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ForgotPassword2.this, "Unexpected response format!", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(ForgotPassword2.this, "Failed to send OTP. Try again!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<Map<String, String>> call, Throwable t) {
                 Toast.makeText(ForgotPassword2.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
 }

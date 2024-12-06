@@ -13,6 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.example.finalproject.api.ApiClient;
+import com.example.finalproject.api.Pothole;
+import com.example.finalproject.api.restful_api;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -28,6 +31,16 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
 import com.mapbox.maps.MapboxMap;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PotholeReporter {
     private final Context context;
@@ -117,17 +130,72 @@ public class PotholeReporter {
         });
     }
     private void insertPothole(double longitude, double latitude, String email, String size) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_LONGITUDE, longitude);
-        values.put(DatabaseHelper.COLUMN_LATITUDE, latitude);
-        values.put(DatabaseHelper.COLUMN_EMAIL, email); // Insert email
-        values.put(DatabaseHelper.COLUMN_SIZE, size); // Insert size
-        db.insert(DatabaseHelper.TABLE_NAME, null, values);
+        // Tạo một đối tượng Pothole với các tham số đã cung cấp
+        Pothole pothole = new Pothole();
+        pothole.setLongitude(longitude);
+        pothole.setLatitude(latitude);
+        pothole.setEmail(email);
+        pothole.setSize(size);
+
+        // Sử dụng java.util.Date để lấy thời gian hiện tại
+        String currentTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault()).format(new Date());
+        pothole.setTime(currentTime); // Gán thời gian định dạng ISO 8601
+
+        // Lấy Retrofit instance và ApiService
+        restful_api apiService = ApiClient.getRetrofitInstance().create(restful_api.class);
+
+        // Gửi yêu cầu POST
+        apiService.addPothole(pothole).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Xử lý khi API trả về thành công
+                    Toast.makeText(context, "Pothole added successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Xử lý khi API trả về lỗi
+                    Toast.makeText(context, "Failed to add pothole. Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                // Xử lý khi không thể kết nối với server
+                Toast.makeText(context, "Failed to connect to server: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-    public Cursor getAllPotholes() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        return db.query(DatabaseHelper.TABLE_NAME, null, null, null, null, null, null);
+
+
+    public void getAllPotholes(ApiCallback<List<Pothole>> callback) {
+        // Tạo instance của API interface
+        restful_api apiInterface = ApiClient.getRetrofitInstance().create(restful_api.class);
+
+        // Gọi API để lấy danh sách potholes
+        Call<List<Pothole>> call = apiInterface.getAllPotholes();
+        call.enqueue(new Callback<List<Pothole>>() {
+            @Override
+            public void onResponse(Call<List<Pothole>> call, Response<List<Pothole>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Trả về danh sách potholes thông qua callback
+                    callback.onSuccess(response.body());
+                } else {
+                    // Trả về lỗi nếu response không thành công
+                    callback.onError(new Exception("Failed to fetch potholes. Response code: " + response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Pothole>> call, Throwable t) {
+                // Trả về lỗi nếu gọi API thất bại
+                callback.onError(new Exception("API call failed: " + t.getMessage(), t));
+            }
+        });
+    }
+
+    // Interface callback để xử lý kết quả bất đồng bộ
+    public interface ApiCallback<T> {
+        void onSuccess(T result);
+        void onError(Exception e);
     }
     // Phương thức để thay đổi kích thước Bitmap sử dụng Matrix
     public static Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {

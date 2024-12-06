@@ -34,6 +34,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.finalproject.api.Pothole;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -605,21 +606,29 @@ public class BoxMaps extends AppCompatActivity {
         potholeReporter.reportPothole(email, size);
     }
     private void loadPotholes() {
-        Cursor cursor = potholeReporter.getAllPotholes();
-        while (cursor.moveToNext()) {
-            int longitudeIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LONGITUDE);
-            int latitudeIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LATITUDE);
+        potholeReporter.getAllPotholes(new PotholeReporter.ApiCallback<List<Pothole>>() {
+            @Override
+            public void onSuccess(List<Pothole> potholes) {
+                for (Pothole pothole : potholes) {
+                    double longitude = pothole.getLongitude();
+                    double latitude = pothole.getLatitude();
+                    Point point = Point.fromLngLat(longitude, latitude);
 
-            if (longitudeIndex != -1 && latitudeIndex != -1) {
-                double longitude = cursor.getDouble(longitudeIndex);
-                double latitude = cursor.getDouble(latitudeIndex);
-                Point point = Point.fromLngLat(longitude, latitude);
-
-                runOnUiThread(() -> potholeReporter.addMarker(point));
+                    // Thêm marker trên bản đồ (phải chạy trên UI thread)
+                    runOnUiThread(() -> potholeReporter.addMarker(point));
+                }
             }
-        }
-        cursor.close();
+
+            @Override
+            public void onError(Exception e) {
+                // Log lỗi hoặc hiển thị thông báo cho người dùng
+                runOnUiThread(() ->
+                        Toast.makeText(getApplicationContext(), "Failed to load potholes: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
+            }
+        });
     }
+
     private void loadPotholeData() {
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
 

@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.finalproject.api.ApiClient;
 import com.example.finalproject.api.ResponseMessage;
+import com.example.finalproject.api.ResponseModel;
 import com.example.finalproject.api.restful_api;
 
 import retrofit2.Call;
@@ -93,7 +94,7 @@ public class ForgotPassword3 extends AppCompatActivity {
                 return;
             }
 
-            verifyOtp(email, otp, newPassword1);
+            updatePassword(email, newPassword1, newPassword1, otp);
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -103,23 +104,43 @@ public class ForgotPassword3 extends AppCompatActivity {
         });
     }
 
-    private void verifyOtp(String email, String otp, String newpassword) {
-        restfulApi.verifyOtp(email, otp, newpassword).enqueue(new Callback<ResponseMessage>() {
+    private void updatePassword(String email, String newPassword, String rePassword, String otp) {
+        restfulApi.updatePassword(email, newPassword, rePassword, otp).enqueue(new Callback<ResponseModel>() {
             @Override
-            public void onResponse(Call<ResponseMessage> call, Response<ResponseMessage> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(ForgotPassword3.this, "Password has been updated successfully", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(ForgotPassword3.this, LoginScreen.class);
-                    startActivity(intent);
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Lấy thông báo thành công hoặc lỗi từ server
+                    String message = response.body().getMessage();
+                    String error = response.body().getError();
+
+                    // Hiển thị thông báo từ server
+                    if (message != null) {
+                        Toast.makeText(ForgotPassword3.this, message, Toast.LENGTH_SHORT).show();
+                    } else if (error != null) {
+                        Toast.makeText(ForgotPassword3.this, error, Toast.LENGTH_SHORT).show();
+                    }
+
+                    // Điều hướng đến màn hình đăng nhập nếu thành công
+                    if (message != null && message.equals("Password updated successfully")) {
+                        Intent intent = new Intent(ForgotPassword3.this, LoginScreen.class);
+                        startActivity(intent);
+                        finish(); // Đóng activity hiện tại
+                    }
+
                 } else {
-                    Toast.makeText(ForgotPassword3.this, "Failed to verify OTP. Try again!", Toast.LENGTH_SHORT).show();
+                    // Khi server không trả về nội dung hoặc gặp lỗi
+                    Toast.makeText(ForgotPassword3.this, "Failed to update password. Try again!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseMessage> call, Throwable t) {
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                // Xử lý khi request gặp lỗi
                 Toast.makeText(ForgotPassword3.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
+
 }
