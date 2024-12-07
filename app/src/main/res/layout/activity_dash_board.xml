@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/app/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -18,60 +18,38 @@
   <!-- Main Content -->
   <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:orientation="vertical"
-      android:layout_gravity="center_horizontal"
-      android:padding="20dp">
+      android:paddingTop="16dp"
+      android:paddingLeft="8dp"
+      android:paddingRight="8dp">
 
-    <!-- Input Fields -->
+    <!-- Header Section with Dashboard Title -->
+    <TextView
+        android:id="@+id/dashboard_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dashboard"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Charts Section 1 (BarChart + PieChart ngang hàng) -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
+        android:layout_weight="1"
+        android:layout_marginBottom="4dp"> <!-- Thêm khoảng cách nhỏ giữa các biểu đồ -->
 
-      <com.google.android.material.textfield.TextInputLayout
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:hint="@string/Asset_Name"
-          app:boxBackgroundColor="@color/white"
-          style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
-
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:simpleItems="@array/asset_type_list" />
-      </com.google.android.material.textfield.TextInputLayout>
-
-      <com.google.android.material.textfield.TextInputLayout
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:hint="@string/Attribute"
-          app:boxBackgroundColor="@color/white"
-          style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu">
-
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:simpleItems="@array/asset_type_list" />
-      </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <!-- Charts Section -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
-
+      <!-- BarChart Container -->
       <FrameLayout
           android:layout_width="0dp"
-          android:layout_height="240dp"
+          android:layout_height="match_parent"
           android:layout_weight="1"
           android:background="@drawable/stat_container"
-          android:padding="8dp">
+          android:padding="4dp">
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/column_chart"
@@ -79,12 +57,14 @@
             android:layout_height="match_parent" />
       </FrameLayout>
 
+      <!-- PieChart Container -->
       <FrameLayout
           android:layout_width="0dp"
-          android:layout_height="240dp"
+          android:layout_height="match_parent"
           android:layout_weight="1"
           android:background="@drawable/stat_container"
-          android:padding="8dp">
+          android:padding="4dp"
+          android:layout_marginStart="4dp"> <!-- Thêm khoảng cách nhỏ -->
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pie_chart"
@@ -93,12 +73,14 @@
       </FrameLayout>
     </LinearLayout>
 
+    <!-- LineChart Section -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@drawable/stat_container"
-        android:padding="8dp"
-        android:layout_marginBottom="8dp">
+        android:padding="4dp"
+        android:layout_marginTop="4dp"> <!-- Thêm khoảng cách nhỏ giữa biểu đồ và nút phía dưới -->
 
       <com.github.mikephil.charting.charts.LineChart
           android:id="@+id/line_chart"
@@ -106,23 +88,20 @@
           android:layout_height="match_parent" />
     </FrameLayout>
 
-    <!-- Buttons -->
-    <Button
-        android:id="@+id/load_data_button"
-        android:layout_width="wrap_content"
+    <!-- Nút Refresh Data -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Load Data"
-        android:layout_marginBottom="8dp"
-        android:layout_gravity="center_horizontal" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
 
-    <!-- Refresh Data Button -->
-    <Button
-        android:id="@+id/refresh_data_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Refresh Data"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="12dp"/>
+      <Button
+          android:id="@+id/refresh_data_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Refresh Data" />
+    </LinearLayout>
 
   </LinearLayout>
 

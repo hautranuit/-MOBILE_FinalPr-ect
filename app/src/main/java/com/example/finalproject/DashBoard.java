@@ -63,11 +63,6 @@ public class DashBoard extends AppCompatActivity {
         setupPieChart();
         setupBarChart();
         setupLineChart();
-        findViewById(R.id.load_data_button).setOnClickListener(v -> {
-            setupPieChart();
-            setupBarChart();
-            setupLineChart();
-        });
 
         // Button Refresh Data
         findViewById(R.id.refresh_data_button).setOnClickListener(v -> refreshData());
