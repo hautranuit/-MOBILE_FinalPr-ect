@@ -96,14 +96,6 @@
         android:gravity="center"
         android:paddingHorizontal="16dp">
 
-        <!-- Email Input -->
-        <EditText
-            android:id="@+id/emailEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Enter your email"
-            android:layout_marginEnd="8dp" />
 
         <!-- Report Button -->
         <com.google.android.material.button.MaterialButton
@@ -112,8 +104,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
+            android:layout_marginStart="100dp"
             android:text="Report"
             android:textColor="@android:color/white"
+            android:backgroundTint="#4B3621"
             app:iconGravity="textStart"
             app:iconPadding="8dp" />
 
@@ -125,6 +119,7 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:text="Set Route"
+            android:backgroundTint="#4B3621"
             android:textColor="@android:color/white"
             app:iconGravity="textStart"
             app:iconPadding="8dp" />

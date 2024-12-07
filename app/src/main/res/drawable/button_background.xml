@@ -1,5 +1,5 @@
 <!-- res/drawable/button_background.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="8dp"/> <!-- Điều chỉnh độ bo góc ở đây -->
-    <solid android:color="#000000"/> <!-- Màu nền của nút -->
+    <solid android:color="#4B3621" /> <!-- Màu nền -->
+    <corners android:radius="16dp" /> <!-- Bo góc -->
 </shape>

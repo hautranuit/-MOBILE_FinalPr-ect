@@ -27,12 +27,7 @@
 
         <activity
             android:name=".DashBoard"
-            android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+            android:exported="false"/>
         <activity
             android:name=".Settings_helpCenter"
             android:exported="false" />
@@ -96,8 +91,12 @@
             android:exported="false" />
         <activity
             android:name=".BoxMaps"
-            android:exported="true" />
-
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".MainActivity"

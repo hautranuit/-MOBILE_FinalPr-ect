@@ -289,7 +289,7 @@ public class BoxMaps extends AppCompatActivity {
         potholeReporter = new PotholeReporter(this, mapView);
         loadPotholes();
 
-        emailEditText = findViewById(R.id.emailEditText);
+        //emailEditText = findViewById(R.id.emailEditText);
         reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override

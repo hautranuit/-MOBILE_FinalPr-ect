@@ -21,6 +21,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ic_back" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -78,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="15dp"
         android:translationY="0dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
@@ -212,7 +222,92 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/footerCard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.3"> <!-- Chiếm 35% chiều cao màn hình -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="start">
+
+        <!-- Tên ứng dụng -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pothole DiscoSafe"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:gravity="center"/>
+
+        <!-- Phiên bản ứng dụng -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Version 1.0.0"
+            android:textSize="16sp"
+            android:textColor="#666666"
+            android:gravity="start"
+            android:layout_marginTop="8dp" />
+
+        <!-- Thông tin bản quyền -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="© 2024 Pothole Detection Team"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:gravity="start"
+            android:layout_marginTop="8dp" />
+
+        <!-- Mô tả về ứng dụng -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pothole App helps in detecting potholes on roads to improve road safety and maintenance. It allows users to report potholes with their location."
+            android:textSize="14sp"
+            android:textColor="#333333"
+            android:gravity="start"
+            android:layout_marginTop="16dp"/>
+
+        <!-- Thông tin liên hệ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contact us: support@potholeapp.com"
+            android:textSize="14sp"
+            android:textColor="#333333"
+            android:gravity="start"
+            android:layout_marginTop="8dp" />
+
+        <!-- Liên kết mạng xã hội -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Follow us on Twitter: @PotholeApp"
+            android:textSize="14sp"
+            android:textColor="#6200EE"
+            android:gravity="start"
+            android:layout_marginTop="8dp" />
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
