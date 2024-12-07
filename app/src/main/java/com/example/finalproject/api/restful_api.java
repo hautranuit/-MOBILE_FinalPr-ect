@@ -87,4 +87,8 @@ public interface restful_api {
     // Endpoint đếm số lượng ổ gà theo size và email
     @GET("/map/potholes/count-by-size-and-email")
     Call<Map<String, Long>> countPotholesBySizeAndEmail(@Query("email") String email);
+
+
+    @GET("/map/potholes/count-by-eachday")
+    Call<Map<String, Long>> countPotholesByDay();
 }

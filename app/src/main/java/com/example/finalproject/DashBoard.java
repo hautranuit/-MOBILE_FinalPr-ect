@@ -11,9 +11,14 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.*;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -138,13 +143,11 @@ public class DashBoard extends AppCompatActivity {
     }
 
     private void setupBarChart() {
-        String startTime = "2024-12-06"; // Thời gian bắt đầu
-        String endTime = "2024-12-07";   // Thời gian kết thúc
+        Call<Map<String, Long>> call = apiService.countPotholesByDay();
 
-        Call<List<Pothole>> call = apiService.getPotholesByTime(startTime, endTime);
-        call.enqueue(new Callback<List<Pothole>>() {
+        call.enqueue(new Callback<Map<String, Long>>() {
             @Override
-            public void onResponse(Call<List<Pothole>> call, Response<List<Pothole>> response) {
+            public void onResponse(Call<Map<String, Long>> call, Response<Map<String, Long>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     updateBarChart(response.body());
                 } else {
@@ -153,24 +156,44 @@ public class DashBoard extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Pothole>> call, Throwable t) {
+            public void onFailure(Call<Map<String, Long>> call, Throwable t) {
                 barChart.setNoDataText("Failed to load data: " + t.getMessage());
             }
         });
     }
 
-    private void updateBarChart(List<Pothole> potholes) {
+    private void updateBarChart(Map<String, Long> data) {
         List<BarEntry> entries = new ArrayList<>();
-        for (int i = 0; i < potholes.size(); i++) {
-            Pothole pothole = potholes.get(i);
-            entries.add(new BarEntry(i, pothole.getCount()));
+        List<String> labels = new ArrayList<>();
+
+        int index = 0; // Chỉ số index trên trục X
+        for (String date : data.keySet()) {
+            int count = data.get(date) != null ? data.get(date).intValue() : 0; // Dữ liệu chỉ lấy số nguyên
+            entries.add(new BarEntry(index, count));
+            labels.add(date); // Lưu ngày hoặc chỉ số hiển thị trên trục X
+            index++;
         }
 
         BarDataSet dataSet = new BarDataSet(entries, "Potholes by Day");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        BarData data = new BarData(dataSet);
 
-        barChart.setData(data);
+        BarData barData = new BarData(dataSet);
+        barChart.setData(barData);
+
+        // Cập nhật trục X
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(labels.size());
+
+        // Cập nhật trục Y để hiển thị các số nguyên trên trục này
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setGranularity(1f); // Chỉ hiển thị các số nguyên
+        leftAxis.setDrawLabels(true);
+        leftAxis.setAxisMinimum(0); // Đảm bảo không hiển thị số âm
+
+        barChart.getAxisRight().setEnabled(false); // Tắt trục Y bên phải
         barChart.invalidate(); // Refresh biểu đồ
     }
 
@@ -193,8 +216,8 @@ public class DashBoard extends AppCompatActivity {
         @GET("/map/potholes/count-by-size")
         Call<Long> countPotholesBySize(@Query("size") String size);
 
-        @GET("/map/potholes/time")
-        Call<List<Pothole>> getPotholesByTime(@Query("startTime") String startTime, @Query("endTime") String endTime);
+        @GET("/map/potholes/count-by-eachday")
+        Call<Map<String, Long>> countPotholesByDay();
     }
 
     public static class Pothole {
