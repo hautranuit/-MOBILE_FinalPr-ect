@@ -1,13 +1,13 @@
 package com.example.finalproject;
 
 import android.Manifest;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Location;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,21 +19,18 @@ import com.example.finalproject.api.restful_api;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
+import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.geojson.Point;
 import com.mapbox.maps.MapView;
-import com.mapbox.maps.Style;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotation;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
-import com.mapbox.maps.MapboxMap;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +47,7 @@ public class PotholeReporter {
     private long lastCameraUpdateTime = 0;  // Để kiểm tra thời gian thay đổi camera
 
     private final DatabaseHelper dbHelper;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     public PotholeReporter(Context context, MapView mapView) {
         this.context = context;
@@ -58,12 +56,14 @@ public class PotholeReporter {
     }
 
     public void reportPothole(String email, String size) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            throw new SecurityException("Location permission not granted.");
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Yêu cầu quyền truy cập vị trí nếu chưa được cấp
+            return;
         }
 
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(context);
-        locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
+        LocationEngineCallback<LocationEngineResult> callback = new LocationEngineCallback<LocationEngineResult>() {
             @Override
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
@@ -71,11 +71,16 @@ public class PotholeReporter {
                     double longitude = location.getLongitude();
                     double latitude = location.getLatitude();
 
-                    // Insert the pothole with email and size
+                    // Ghi log vị trí để kiểm tra
+                    Log.d("PotholeReporter", "Location obtained: Latitude: " + latitude + ", Longitude: " + longitude);
+
+                    // Thêm ổ gà với email và kích thước
                     insertPothole(longitude, latitude, email, size);
 
-                    // Add marker on the map
-                    addMarker(Point.fromLngLat(longitude, latitude));
+                    // Thêm marker lên bản đồ
+                    addMarker(Point.fromLngLat(longitude, latitude), size);
+                } else {
+                    Log.e("PotholeReporter", "Location is null.");
                 }
             }
 
@@ -83,52 +88,67 @@ public class PotholeReporter {
             public void onFailure(@NonNull Exception exception) {
                 Toast.makeText(context, "Failed to get location: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
+        };
+
+        // Gỡ bỏ cập nhật sau khi lấy vị trí
+        locationEngine.getLastLocation(callback);
     }
 
-    public void addMarker(Point point) {
+    public void addMarker(Point point, String size) {
         mapView.getMapboxMap().getStyle(style -> {
             if (style != null) {
-                // Lấy AnnotationPlugin từ MapView
                 AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
-
-                // Tạo PointAnnotationManager từ AnnotationPlugin
                 pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
 
-                // Tạo biểu tượng từ tài nguyên drawable
-                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon);
+                // Tải ảnh dựa trên kích thước
+                Bitmap bitmap;
+                switch (size.toLowerCase()) {
+                    case "small":
+                        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon_small);
+                        break;
+                    case "medium":
+                        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon_medium);
+                        break;
+                    case "big":
+                        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon_large);
+                        break;
+                    default:
+                        return;
+                }
 
-                // Thay đổi kích thước của ảnh (giảm kích thước ảnh ban đầu)
-                Bitmap scaledBitmap = scaleBitmap(bitmap, 0.1f);  // Giảm kích thước ảnh xuống 10%
+                // Giảm kích thước Bitmap
+                Bitmap scaledBitmap = scaleBitmap(bitmap, 0.1f); // Giảm kích thước xuống 20% (thay đổi nếu cần)
 
-                // Cấu hình PointAnnotationOptions với kích thước ban đầu đã giảm
+                // Thêm PointAnnotationOptions
                 PointAnnotationOptions options = new PointAnnotationOptions()
                         .withPoint(point)
                         .withIconImage(scaledBitmap)
-                        .withIconSize(0.5f); // Kích thước biểu tượng ban đầu nhỏ hơn
+                        .withIconSize(1.0f); // Kích thước Mapbox iconSize (dùng 1.0f vì bitmap đã được giảm)
 
-                // Thêm marker vào bản đồ
                 pointAnnotationManager.create(options);
 
-                // Lắng nghe sự kiện thay đổi camera
-                mapView.getMapboxMap().addOnCameraChangeListener((cameraState) -> {
-                    // Kiểm tra thời gian cập nhật camera để xác định khi camera đã dừng lại
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - lastCameraUpdateTime > 500) { // Nếu quá 500ms, coi như camera đã dừng lại
-                        if (cameraState != null) {
-                            // Lấy camera state từ MapboxMap để truy cập zoom
-                            double zoom = mapView.getMapboxMap().getCameraState().getZoom(); // Truy cập zoom qua getCameraState()
-                            updateIconSize(zoom);
-                        }
-                        else {
-                            Toast.makeText(context, "Camera state is null", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    lastCameraUpdateTime = currentTime; // Cập nhật thời gian
-                });
             }
         });
     }
+
+
+    // Phương thức để khởi tạo và lắng nghe sự thay đổi camera
+    public void startListeningCameraChange() {
+        mapView.getMapboxMap().addOnCameraChangeListener((cameraState) -> {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastCameraUpdateTime > 250) { // Nếu quá 250ms, coi như camera đã dừng lại
+                if (cameraState != null) {
+                    double zoom = mapView.getMapboxMap().getCameraState().getZoom();
+                    updateIconSize(zoom);
+                } else {
+                    Toast.makeText(context, "Camera state is null", Toast.LENGTH_SHORT).show();
+                }
+            }
+            lastCameraUpdateTime = currentTime; // Cập nhật thời gian
+        });
+    }
+
+
     private void insertPothole(double longitude, double latitude, String email, String size) {
         // Tạo một đối tượng Pothole với các tham số đã cung cấp
         Pothole pothole = new Pothole();
@@ -165,7 +185,6 @@ public class PotholeReporter {
         });
     }
 
-
     public void getAllPotholes(ApiCallback<List<Pothole>> callback) {
         // Tạo instance của API interface
         restful_api apiInterface = ApiClient.getRetrofitInstance().create(restful_api.class);
@@ -197,6 +216,7 @@ public class PotholeReporter {
         void onSuccess(T result);
         void onError(Exception e);
     }
+
     // Phương thức để thay đổi kích thước Bitmap sử dụng Matrix
     public static Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
         int width = bm.getWidth();
@@ -208,36 +228,28 @@ public class PotholeReporter {
         return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
     }
 
-    // Thay đổi phương thức scaleBitmap để sử dụng Matrix
-    private Bitmap scaleBitmap(Bitmap originalBitmap, float scaleFactor) {
-        int width = originalBitmap.getWidth();
-        int height = originalBitmap.getHeight();
-        int newWidth = (int) (width * scaleFactor);
-        int newHeight = (int) (height * scaleFactor);
-        return getResizedBitmap(originalBitmap, newHeight, newWidth);
+    // Phương thức để giảm kích thước ảnh Bitmap
+    private Bitmap scaleBitmap(Bitmap bitmap, float scaleFactor) {
+        int width = Math.round(bitmap.getWidth() * scaleFactor);
+        int height = Math.round(bitmap.getHeight() * scaleFactor);
+        return Bitmap.createScaledBitmap(bitmap, width, height, true);
     }
 
     private void updateIconSize(double zoom) {
-        if (pointAnnotationManager != null && point != null) {
-            double minSize = 0.05;
-            double maxSize = 1;
-            double newSize = Math.max(minSize, Math.min(maxSize, (zoom / 22.0) * 2.0));
+        if (pointAnnotationManager != null) {
+            // Tính toán kích thước biểu tượng mới dựa trên mức độ zoom
+            double newIconSize = Math.pow(2, (zoom - 15) / 3); // Điều chỉnh hệ số (3 thay vì 2) để giảm kích thước tổng thể
+            newIconSize = Math.max(0.05, Math.min(0.15, newIconSize)); // Giới hạn kích thước trong khoảng hợp lý
 
-            // Tạo biểu tượng từ tài nguyên drawable
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon);
+            // Cập nhật tất cả các biểu tượng trong PointAnnotationManager
+            for (PointAnnotation annotation : pointAnnotationManager.getAnnotations()) {
+                annotation.setIconSize(newIconSize); // Cập nhật kích thước
+            }
 
-            // Thay đổi kích thước của ảnh khi zoom
-            Bitmap scaledBitmap = scaleBitmap(bitmap, (float) newSize);
-
-            // Cấu hình PointAnnotationOptions với kích thước mới
-            PointAnnotationOptions options = new PointAnnotationOptions()
-                    .withPoint(point)
-                    .withIconImage(scaledBitmap)
-                    .withIconSize((float) newSize);
-
-            // Xóa tất cả các annotation hiện tại và thêm lại marker vào bản đồ với kích thước mới
-            pointAnnotationManager.deleteAll();
-            pointAnnotationManager.create(options);
+            // Áp dụng thay đổi cho PointAnnotationManager
+            pointAnnotationManager.update(pointAnnotationManager.getAnnotations());
         }
     }
+
+
 }

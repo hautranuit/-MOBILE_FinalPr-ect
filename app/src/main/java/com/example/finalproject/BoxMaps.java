@@ -135,6 +135,8 @@ public class BoxMaps extends AppCompatActivity {
     private EditText emailEditText;
     private Button reportButton;
     private DatabaseHelper dbHelper;
+    private String userEmail;
+
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
         public void onNewRawLocation(@NonNull Location location) {
@@ -275,11 +277,18 @@ public class BoxMaps extends AppCompatActivity {
             });
         }
     };
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Khởi động việc lắng nghe sự thay đổi của camera
+        potholeReporter.startListeningCameraChange();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_box_maps);
+        userEmail = getIntent().getStringExtra("USER_EMAIL");
 
         mapView = findViewById(R.id.mapView);
         focusLocationBtn = findViewById(R.id.focusLocation);
@@ -303,17 +312,14 @@ public class BoxMaps extends AppCompatActivity {
         potholeDetector = new PotholeDetector(this, new PotholeDetector.PotholeCallback() {
             @Override
             public void onPotholeDetected(String size) {
-                String email = emailEditText.getText().toString().trim();
-
-                if (email.isEmpty()) {
+                if (userEmail.isEmpty()) {
                     Log.e("PotholeDetector", "Email is empty. Cannot report pothole.");
                     return;
                 }
 
                 Log.d("PotholeDetector", "Pothole detected of size: " + size);
 
-                // Báo cáo ổ gà qua PotholeReporter
-                potholeReporter.reportPothole(email, size);
+                potholeReporter.reportPothole(userEmail, size);
             }
         });
 
@@ -591,9 +597,8 @@ public class BoxMaps extends AppCompatActivity {
                 .setItems(sizes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String userEmail = emailEditText.getText().toString();
                         if (userEmail.isEmpty()) {
-                            Toast.makeText(BoxMaps.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BoxMaps.this, "User email not found", Toast.LENGTH_SHORT).show();
                         } else {
                             String potholeSize = sizes[which].toLowerCase();
                             reportPothole(userEmail, potholeSize);
@@ -602,6 +607,7 @@ public class BoxMaps extends AppCompatActivity {
                 });
         builder.create().show();
     }
+
     private void reportPothole(String email, String size) {
         potholeReporter.reportPothole(email, size);
     }
@@ -614,8 +620,12 @@ public class BoxMaps extends AppCompatActivity {
                     double latitude = pothole.getLatitude();
                     Point point = Point.fromLngLat(longitude, latitude);
 
+                    // Lấy kích thước của ổ gà từ đối tượng Pothole
+                    // Giả sử Pothole có trường size để xác định kích thước, ví dụ: "small", "medium", "big"
+                    String size = pothole.getSize();  // Ví dụ: "small", "medium", "big"
+
                     // Thêm marker trên bản đồ (phải chạy trên UI thread)
-                    runOnUiThread(() -> potholeReporter.addMarker(point));
+                    runOnUiThread(() -> potholeReporter.addMarker(point, size));
                 }
             }
 
@@ -628,6 +638,7 @@ public class BoxMaps extends AppCompatActivity {
             }
         });
     }
+
 
     private void loadPotholeData() {
         DatabaseHelper databaseHelper = new DatabaseHelper(this);

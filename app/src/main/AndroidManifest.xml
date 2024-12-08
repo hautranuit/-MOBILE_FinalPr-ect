@@ -22,7 +22,7 @@
             android:name=".MainComponent"
             android:exported="false" />
         <activity
-            android:name=".LoginScreen"
+            android:name=".BoxMaps"
             android:exported="true" />
 
         <activity
@@ -90,7 +90,7 @@
             android:name=".ForgotPassword1"
             android:exported="false" />
         <activity
-            android:name=".BoxMaps"
+            android:name=".LoginScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

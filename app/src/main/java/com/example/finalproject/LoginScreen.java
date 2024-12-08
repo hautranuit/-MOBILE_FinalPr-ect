@@ -58,10 +58,12 @@ public class LoginScreen extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                             if (response.isSuccessful() && response.body() != null) {
+                                String email = email_input.getText().toString().trim(); // Get the email from input
                                 String token = response.body().getToken();
                                 Toast.makeText(LoginScreen.this,"Login successful", Toast.LENGTH_SHORT).show();
 
                                 Intent intent = new Intent(LoginScreen.this, BoxMaps.class);
+                                intent.putExtra("USER_EMAIL", email); // Pass the email to BoxMaps activity
                                 startActivity(intent);
                                 finish();
                             } else {
