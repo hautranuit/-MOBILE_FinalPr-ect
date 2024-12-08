@@ -84,7 +84,7 @@ public class LoginScreen extends AppCompatActivity {
         img_bt_signup_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginScreen.this, SignUpEmail.class);
+                Intent intent = new Intent(LoginScreen.this, SignUp_Google1.class);
                 startActivity(intent);
             }
         });

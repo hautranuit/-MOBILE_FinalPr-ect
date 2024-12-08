@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".Customize"
+    android:background="@drawable/gradient_background">
+
+    <!-- Back Icon and Header -->
+    <LinearLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/iconBack"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_back"
+            android:layout_marginStart="16dp"
+            android:contentDescription="Back Icon"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customize"
+            android:layout_marginStart="120dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
+    <!-- CardView for Common Section -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardCommon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvCommon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Common"
+                android:textColor="#B0B0B0"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Detection Sensitivity -->
+            <LinearLayout
+                android:id="@+id/layoutSensitivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Detection sensitivity"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/tvminSensitivityValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100m"
+                    android:layout_marginStart="8dp" />
+
+                <SeekBar
+                    android:id="@+id/seekBarSensitivity"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="10"
+                    android:max="500"
+                    android:progress="100" />
+
+                <TextView
+                    android:id="@+id/tvmaxSensitivityValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="500m"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
+            <!-- General Notification -->
+            <Switch
+                android:id="@+id/switchGeneralNotification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="General Notification"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:padding="15dp"
+                android:layout_marginBottom="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+            <!-- Sound -->
+            <Switch
+                android:id="@+id/switchSound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sound"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:padding="16dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginBottom="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+            <!-- Vibrate -->
+            <Switch
+                android:id="@+id/switchVibrate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vibrate"
+                android:textStyle="bold"
+                android:padding="16dp"
+                android:textSize="15sp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- CardView for System & Services Update Section -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardSystemServices"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/cardCommon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvSystemServices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/system_services_update"
+                android:textColor="#B0B0B0"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <!-- App Updates -->
+            <Switch
+                android:id="@+id/switchAppUpdates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="App updates"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+            <!-- Bill Reminder -->
+            <Switch
+                android:id="@+id/switchBillReminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bill Reminder"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+            <!-- Promotion -->
+            <Switch
+                android:id="@+id/switchPromotion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Promotion"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+            <!-- Discount Available -->
+            <Switch
+                android:id="@+id/switchDiscountAvailable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Discount Available"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+            <!-- Payment Request -->
+            <Switch
+                android:id="@+id/switchPaymentRequest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Payment Request"
+                android:textStyle="bold"
+                android:padding="16dp"
+                android:textSize="15sp"
+                tools:ignore="UseSwitchCompatOrMaterialXml"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
