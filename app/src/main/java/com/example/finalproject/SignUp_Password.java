@@ -47,14 +47,20 @@ public class SignUp_Password extends AppCompatActivity {
                 if (password.isEmpty()) {
                     Toast.makeText(SignUp_Password.this, "Ô Password không được để trống", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(SignUp_Password.this, DetailSignUp.class);
-                    intent.putExtra("email", email);
-                    intent.putExtra("username", username);
-                    intent.putExtra("password", password);
-                    startActivity(intent);
+                    try {
+                        Intent intent = new Intent(SignUp_Password.this, SignUp_Avt.class);
+                        intent.putExtra("email", email);
+                        intent.putExtra("username", username);
+                        intent.putExtra("password", password);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Toast.makeText(SignUp_Password.this, "Lỗi khi chuyển Activity: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
                 }
             }
         });
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
