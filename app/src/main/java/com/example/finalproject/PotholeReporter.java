@@ -117,7 +117,7 @@ public class PotholeReporter {
                 }
 
                 // Giảm kích thước Bitmap
-                Bitmap scaledBitmap = scaleBitmap(bitmap, 0.1f); // Giảm kích thước xuống 20% (thay đổi nếu cần)
+                Bitmap scaledBitmap = scaleBitmap(bitmap, 0.2f); // Giảm kích thước xuống 20% (thay đổi nếu cần)
 
                 // Thêm PointAnnotationOptions
                 PointAnnotationOptions options = new PointAnnotationOptions()
@@ -238,8 +238,8 @@ public class PotholeReporter {
     private void updateIconSize(double zoom) {
         if (pointAnnotationManager != null) {
             // Tính toán kích thước biểu tượng mới dựa trên mức độ zoom
-            double newIconSize = Math.pow(2, (zoom - 15) / 3); // Điều chỉnh hệ số (3 thay vì 2) để giảm kích thước tổng thể
-            newIconSize = Math.max(0.05, Math.min(0.15, newIconSize)); // Giới hạn kích thước trong khoảng hợp lý
+            double newIconSize = Math.pow(1.5, (zoom - 15) / 2); // Điều chỉnh hệ số để giảm sự thay đổi kích thước
+            newIconSize = Math.max(0.3, Math.min(0.5, newIconSize)); // Tăng giới hạn kích thước để biểu tượng không quá nhỏ
 
             // Cập nhật tất cả các biểu tượng trong PointAnnotationManager
             for (PointAnnotation annotation : pointAnnotationManager.getAnnotations()) {
@@ -250,6 +250,4 @@ public class PotholeReporter {
             pointAnnotationManager.update(pointAnnotationManager.getAnnotations());
         }
     }
-
-
 }
