@@ -2,10 +2,12 @@ package com.example.finalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,9 +29,10 @@ import retrofit2.Response;
 public class LoginScreen extends AppCompatActivity {
 
     ImageButton img_bt_signup_email;
+    ImageView iconEye;
     EditText email_input, password_input;
     Button button_login;
-    TextView forgot_password;
+    TextView forgot_password,create_account;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +40,35 @@ public class LoginScreen extends AppCompatActivity {
         setContentView(R.layout.activity_login_screen);
 
         img_bt_signup_email = findViewById(R.id.img_bt_signup_email);
+        iconEye = findViewById(R.id.icon_eye);
+
         email_input = findViewById(R.id.email_input);
-        password_input = findViewById(R.id.password_input);
+        password_input = findViewById(R.id.password_Input);
         button_login = findViewById(R.id.button_login);
         forgot_password = findViewById(R.id.forgot_password);
+        create_account = findViewById(R.id.createAccount);
+
+        iconEye.setOnClickListener(v -> {
+            if (password_input.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                // Đổi sang chế độ ẩn mật khẩu
+                password_input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                iconEye.setImageResource(R.drawable.ic_eye); // Đổi về biểu tượng "ẩn"
+            } else {
+                // Đổi sang chế độ hiển thị mật khẩu
+                password_input.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                iconEye.setImageResource(R.drawable.ic_eye_close); // Đổi về biểu tượng "hiện"
+            }
+            password_input.setSelection(password_input.getText().length()); // Đặt lại vị trí con trỏ
+        });
+
+        create_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginScreen.this, SignUpYourname.class);
+                startActivity(intent);
+            }
+        });
+
 
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override

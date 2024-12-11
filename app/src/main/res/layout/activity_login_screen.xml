@@ -64,22 +64,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_name" />
 
-    <EditText
-        android:id="@+id/password_input"
+    <LinearLayout
+        android:id="@id/password_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="30dp"
-        android:fontFamily="@font/poppins_light_italic"
-        android:hint="@string/password_hint"
-        android:inputType="textPassword"
+        android:orientation="horizontal"
         android:padding="12dp"
-        android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email_input" />
+        app:layout_constraintTop_toBottomOf="@id/email_input">
+
+        <EditText
+            android:id="@+id/password_Input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/password_hint"
+            android:fontFamily="@font/poppins_light_italic"
+            android:inputType="textPassword"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:background="@android:color/transparent"
+            android:padding="12dp"
+            android:singleLine="true" />
+
+        <ImageView
+            android:id="@+id/icon_eye"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="@string/show_password"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/ic_eye"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+
 
     <CheckBox
         android:id="@+id/remember_me"
@@ -123,67 +144,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/forgot_password" />
 
-    <TextView
-        android:id="@+id/or_sign_up_with"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/or_sign_up_with"
-        android:textColor="@android:color/white"
-        android:fontFamily="@font/poppins_extralight"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_login" />
+
 
     <LinearLayout
         android:id="@+id/social_login_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/or_sign_up_with">
+        app:layout_constraintTop_toBottomOf="@id/button_login">
+
+        <TextView
+            android:id="@+id/createAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+
+            android:text="Create account"
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/poppins_medium" />
+
+        <TextView
+            android:id="@+id/or_sign_up_with"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="or_sign_up_with"
+            android:textStyle="normal"
+            android:layout_marginStart="7dp"
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/poppins_extralight" />
 
         <ImageButton
             android:id="@+id/img_bt_signup_email"
-            android:layout_width="61dp"
-            android:layout_height="57dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
             android:background="@drawable/social_button_background"
             android:contentDescription="@string/google_login"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_google" />
-
-        <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="57dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/social_button_background"
-            android:contentDescription="@string/apple_login"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_apple" />
-
-        <ImageButton
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/social_button_background"
-            android:contentDescription="@string/facebook_login"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_facebook" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/create_account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="@string/create_account"
-        android:textColor="@android:color/white"
-        android:fontFamily="@font/poppins_medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/social_login_buttons" />
 
     <ImageView
         android:id="@+id/imageView2"
