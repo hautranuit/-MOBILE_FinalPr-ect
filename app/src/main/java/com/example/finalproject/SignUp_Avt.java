@@ -25,7 +25,8 @@ public class SignUp_Avt extends AppCompatActivity {
     private Uri selectedImageUri; // Biến lưu URI của ảnh đã chọn
     ImageView imgAvatar;
     CircleImageView btnEditAvatar;
-    Button  btnNext;
+    Button btnNext;
+    ImageView btnClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +38,14 @@ public class SignUp_Avt extends AppCompatActivity {
         imgAvatar = findViewById(R.id.imgAvatar);
         btnEditAvatar = findViewById(R.id.btnEditAvatar);
         btnNext = findViewById(R.id.btnNext);
+        btnClose = findViewById(R.id.btnClose);
 
         // Nhận dữ liệu từ Intent
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
         String username = intent.getStringExtra("username");
         String password = intent.getStringExtra("password");
+        String fullName = intent.getStringExtra("fullName"); // Retrieve fullName from the intent
 
         // Xử lý sự kiện khi nhấn btnEditAvatar
         btnEditAvatar.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +54,13 @@ public class SignUp_Avt extends AppCompatActivity {
                 openImageChooser();
             }
         });
-
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SignUp_Avt.this, LoginScreen.class);
+                startActivity(intent);
+            }
+        });
         // Xử lý sự kiện khi nhấn btnNext
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +69,7 @@ public class SignUp_Avt extends AppCompatActivity {
                 nextIntent.putExtra("email", email);
                 nextIntent.putExtra("username", username);
                 nextIntent.putExtra("password", password);
+                nextIntent.putExtra("fullName", fullName); // Pass fullName to next activity
                 if (selectedImageUri != null) {
                     nextIntent.putExtra("avatarUri", selectedImageUri); // Truyền URI của ảnh
                 }

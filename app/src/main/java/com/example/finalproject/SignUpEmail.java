@@ -3,7 +3,6 @@ package com.example.finalproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -19,6 +18,7 @@ public class SignUpEmail extends AppCompatActivity {
     ImageView btnClose;
     EditText edittext_email;
     ImageView btnrightarrow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +29,11 @@ public class SignUpEmail extends AppCompatActivity {
         btnClose = findViewById(R.id.btnClose);
         btnrightarrow = findViewById(R.id.btnrightarrow);
 
+        // Nhận tên đầy đủ từ Intent
+        Intent intent = getIntent();
+        String fullName = intent.getStringExtra("fullName");
+
+        // Xử lý nút đóng (btnClose)
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -37,24 +42,26 @@ public class SignUpEmail extends AppCompatActivity {
             }
         });
 
+        // Xử lý nút mũi tên (btnRightArrow)
         btnrightarrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String email = edittext_email.getText().toString().trim();
 
-                // Kiểm tra nếu ô edittext rỗng
+                // Kiểm tra nếu ô email rỗng
                 if (email.isEmpty()) {
-                    // Hiển thị thông báo lỗi
                     Toast.makeText(SignUpEmail.this, "Ô email không được để trống", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Tạo Intent và truyền email tới SignupUsername
+                    // Tạo Intent và truyền cả tên đầy đủ và email tới SignUpUsername
                     Intent intent = new Intent(SignUpEmail.this, SignUpUsername.class);
-                    intent.putExtra("email", email);
+                    intent.putExtra("fullName", fullName); // Truyền tên đầy đủ
+                    intent.putExtra("email", email);       // Truyền email
                     startActivity(intent);
                 }
             }
         });
 
+        // Điều chỉnh padding để phù hợp với system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

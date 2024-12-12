@@ -64,12 +64,18 @@ public class DetailSignUp extends AppCompatActivity {
         String email = intent.getStringExtra("email");
         String username = intent.getStringExtra("username");
         String password = intent.getStringExtra("password");
+        String fullName = intent.getStringExtra("fullName"); // Lấy thêm fullName
         Uri avatarUri = intent.getParcelableExtra("avatarUri");
 
         // Hiển thị thông tin
         text_email.setText(email);
         text_username.setText(username);
         edit_text_password.setText(password);
+
+        // Hiển thị fullName nếu có
+        if (fullName != null && !fullName.isEmpty()) {
+            edit_text_name.setText(fullName); // Gán giá trị vào ô nhập tên
+        }
 
         // Nếu có ảnh đại diện từ Intent thì hiển thị
         if (avatarUri != null) {
@@ -107,7 +113,7 @@ public class DetailSignUp extends AppCompatActivity {
             if (name.isEmpty()) {
                 Toast.makeText(DetailSignUp.this, "Ô Name không được để trống", Toast.LENGTH_SHORT).show();
             } else {
-                SignupRequest signupRequest = new SignupRequest(username, password, email, password);
+                SignupRequest signupRequest = new SignupRequest(username, password, email, name);
                 restful_api restfulApi = ApiClient.getRetrofitInstance().create(restful_api.class);
 
                 restfulApi.signup(signupRequest).enqueue(new Callback<String>() {
@@ -168,7 +174,7 @@ public class DetailSignUp extends AppCompatActivity {
         // Set default hint và màu chữ
         editText.setHint(hintText);
         editText.setHintTextColor(getResources().getColor(android.R.color.darker_gray));
-        editText.setTextColor(getResources().getColor(android.R.color.black)); // Màu chữ mặc định là đen
+        editText.setTextColor(getResources().getColor(android.R.color.darker_gray)); // Màu chữ mặc định là đen
 
         // Lắng nghe sự kiện khi EditText nhận hoặc mất focus
         editText.setOnFocusChangeListener((v, hasFocus) -> {

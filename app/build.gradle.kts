@@ -1,5 +1,6 @@
 plugins {
     id ("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -56,5 +57,13 @@ dependencies {
     implementation ("com.mapbox.search:mapbox-search-android-ui:1.0.0-rc.6")
     implementation ("org.mongodb:mongodb-driver-sync:4.5.1")
     implementation ("org.mongodb:bson:4.5.1")
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore:25.1.1")
 
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 }
