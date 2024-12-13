@@ -119,14 +119,14 @@
             android:layout_width="0dp"
             android:layout_height="4dp"
             android:layout_weight="1"
-            android:background="#FFFFFF"
+            android:background="#000000"
             android:layout_marginHorizontal="4dp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="4dp"
             android:layout_weight="1"
-            android:background="#000000"
+            android:background="#FFFFFF"
             android:layout_marginHorizontal="4dp" />
 
         <View

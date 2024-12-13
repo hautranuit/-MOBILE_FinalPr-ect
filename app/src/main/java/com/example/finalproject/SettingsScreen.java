@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -60,6 +61,35 @@ public class SettingsScreen extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        TextView logout = findViewById(R.id.logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsScreen.this, LoginScreen.class);
+                startActivity(intent);
+            }
+        });
+
+        TextView editprofile = findViewById(R.id.editProfile);
+        editprofile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsScreen.this, DetailSignUp.class);
+                startActivity(intent);
+            }
+        });
+
+        TextView changePassword = findViewById(R.id.editChangePassword);
+        changePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsScreen.this, ChangePassword.class);
+                startActivity(intent);
+            }
+        });
+
+
 
         // Kiểm tra chế độ từ SharedPreferences
         sharedPreferences = getSharedPreferences("AppSettingsPrefs", 0);

@@ -2,6 +2,9 @@ package com.example.finalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,7 +59,9 @@ public class ForgotPassword2 extends AppCompatActivity {
         resendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 sendOtp(email);
+                startCountdownTimer(); // Reset lại thời gian khi gửi mã OTP mới
             }
         });
 
@@ -103,6 +108,9 @@ public class ForgotPassword2 extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Áp dụng TextWatcher
+        setupOtpInputs();
     }
     private void sendOtp(String email) {
         restfulApi.sendOtp(email).enqueue(new Callback<Map<String, String>>() {
@@ -128,6 +136,63 @@ public class ForgotPassword2 extends AppCompatActivity {
             }
         });
     }
+
+    private void setupOtpInputs() {
+        EditText[] otpFields = {edt1, edt2, edt3, edt4, edt5, edt6};
+
+        for (int i = 0; i < otpFields.length; i++) {
+            int currentIndex = i;
+
+            otpFields[i].addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // Chuyển focus khi người dùng nhập
+                    if (s.length() == 1) {
+                        if (currentIndex < otpFields.length - 1) {
+                            otpFields[currentIndex + 1].requestFocus();
+                        }
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+
+            otpFields[i].setOnKeyListener((v, keyCode, event) -> {
+                // Kiểm tra nếu người dùng bấm phím Backspace và ô hiện tại trống
+                if (event.getAction() == android.view.KeyEvent.ACTION_DOWN &&
+                        keyCode == android.view.KeyEvent.KEYCODE_DEL &&
+                        otpFields[currentIndex].getText().length() == 0 &&
+                        currentIndex > 0) {
+                    otpFields[currentIndex - 1].requestFocus();
+                }
+                return false;
+            });
+        }
+    }
+
+    // Hàm đếm ngược
+    private void startCountdownTimer() {
+        TextView countdownTimer = findViewById(R.id.expiryInfo); // Đảm bảo bạn có TextView trong layout với ID này
+
+        new CountDownTimer(59000, 1000) { // 1 phút, cập nhật mỗi giây
+            public void onTick(long millisUntilFinished) {
+                long secondsRemaining = millisUntilFinished / 1000;
+                countdownTimer.setText("The verify code will expire in 00:" + secondsRemaining + " s");
+            }
+
+            public void onFinish() {
+                countdownTimer.setText("The verification code has expired. Please request a new one.");
+                resendCode.setEnabled(true); // Bật lại nút gửi lại mã
+            }
+        }.start();
+
+        resendCode.setEnabled(false); // Vô hiệu hóa nút gửi lại mã trong khi đếm ngược
+    }
+
 
 
 }

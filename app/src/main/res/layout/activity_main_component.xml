@@ -56,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ngoc_hau"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#4B3621"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -64,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="22520412@gm.uit.edu.vn"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#4B3621"
                     android:textSize="16sp"
                     android:textStyle="bold" /> <!-- Giảm textSize nếu muốn hài hòa hơn -->
 
