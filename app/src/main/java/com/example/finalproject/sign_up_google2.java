@@ -9,113 +9,91 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.auth.api.signin.BeginSignInRequest;
-import com.google.android.gms.auth.api.signin.GoogleAuthProvider;
-import com.google.android.gms.auth.api.signin.SignInCredential;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class sign_up_google2 extends AppCompatActivity {
 
-    private static final int REQ_ONE_TAP = 2;
     private FirebaseAuth mAuth;
     private EditText passwordInput;
-    private Button nextButton;
+    private Button btnNext;
     private TextView emailTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_up_google2);
 
+        mAuth = FirebaseAuth.getInstance();
+        emailTextView = findViewById(R.id.email_text);
+        passwordInput = findViewById(R.id.password_input);
+        btnNext = findViewById(R.id.next_button);
+
+        // Retrieve the email from the Intent passed from sign_up_google4
+        Intent intent = getIntent();
+        String email = intent.getStringExtra("email_key");
+        if (email != null) {
+            emailTextView.setText(email);
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            v.setPadding(insets.getInsets(WindowInsetsCompat.Type.systemBars()).left,
+            v.setPadding(
+                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).left,
                     insets.getInsets(WindowInsetsCompat.Type.systemBars()).top,
                     insets.getInsets(WindowInsetsCompat.Type.systemBars()).right,
-                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom);
+                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+            );
             return insets;
         });
 
-        mAuth = FirebaseAuth.getInstance();
-        passwordInput = findViewById(R.id.password_input);
-        nextButton = findViewById(R.id.next_button);
-        emailTextView = findViewById(R.id.email_text);
+        btnNext.setOnClickListener(v -> {
+            String emailFromView = emailTextView.getText().toString().trim();
+            String password = passwordInput.getText().toString().trim();
 
-        String email = getIntent().getStringExtra("email_key");
-        if (email != null) {
-            emailTextView.setText(email);
-            signUpWithEmail(email);
-        } else {
-            Toast.makeText(this, "Không nhận được email!", Toast.LENGTH_SHORT).show();
-        }
-
-        nextButton.setOnClickListener(v -> {
-            String emailInput = getIntent().getStringExtra("email_key");
-            signUpWithEmail(emailInput);
+            if (!emailFromView.isEmpty() && !password.isEmpty()) {
+                signInWithGoogle(emailFromView ,password);
+            } else {
+                Toast.makeText(this, "Please enter all the required information!", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    private void signUpWithEmail(String email) {
-        String password = passwordInput.getText().toString().trim();
-
-        if (password.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập mật khẩu!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        mAuth.createUserWithEmailAndPassword(email, password)
+    private void signInWithGoogle(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        // Check if the account is a Google account
                         FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(sign_up_google2.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(sign_up_google2.this, sign_up_google3.class);
-                        startActivity(intent);
-                        finish();
+                        if (user != null && user.getProviderData().stream()
+                                .anyMatch(authProvider -> authProvider.getProviderId().equals(GoogleAuthProvider.PROVIDER_ID))) {
+                            Toast.makeText(this, "Successfully logged in with Google account!", Toast.LENGTH_SHORT).show();
+                            // Handle post-login logic
+                        } else {
+                            Toast.makeText(this, "This is not a Google account.", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(sign_up_google2.this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Login failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQ_ONE_TAP) {
-            try {
-                SignInCredential googleCredential = mAuth.getCredential(data);
-                String idToken = googleCredential.getGoogleIdToken();
-                if (idToken != null) {
-                    AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
-                    mAuth.signInWithCredential(firebaseCredential)
-                            .addOnCompleteListener(this, task -> {
-                                if (task.isSuccessful()) {
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    updateUI(user);
-                                } else {
-                                    Toast.makeText(this, "Đăng nhập thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    updateUI(null);
-                                }
-                            });
-                }
-            } catch (Exception e) {
-                Log.e("SignInWithGoogle", "Google Sign In failed", e);
-            }
-        }
-    }
-
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            emailTextView.setText(user.getEmail());
-        } else {
-            emailTextView.setText("User not signed in.");
+            Intent intent = new Intent(sign_up_google2.this, sign_up_google3.class); // Replace with your next activity
+            startActivity(intent);
+            finish();
         }
     }
 }

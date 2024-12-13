@@ -34,6 +34,7 @@ android {
         viewBinding = true
     }
 }
+
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -50,7 +51,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
-
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
 
     implementation ("com.mapbox.navigation:android:2.17.1")
@@ -59,11 +59,12 @@ dependencies {
     implementation ("org.mongodb:bson:4.5.1")
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-auth:21.1.0")
     implementation("com.google.firebase:firebase-firestore:25.1.1")
 
     implementation("com.google.android.gms:play-services-auth:21.3.0")
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation ("androidx.credentials:credentials:1.2.2")
 }
