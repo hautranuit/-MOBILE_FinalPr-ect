@@ -8,25 +8,31 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleScope;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.credentials.Credential;
-import com.google.android.gms.credentials.Credentials;
-import com.google.android.gms.credentials.CredentialsOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.playservices.auth.GoogleIdTokenCredential;
+import androidx.window.layout.WindowCompat;
+import androidx.window.layout.WindowInsetsCompat;
+import androidx.window.layout.WindowInsetsControllerCompat;
+
+import java.util.concurrent.Executor;
+
 public class sign_up_google2 extends AppCompatActivity {
 
-    private static final int RC_SIGN_IN = 1001; // Request code for Credential Manager
     private static final String TAG = "GoogleSignIn";
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth auth;
     private Button googleSignInButton;
+    private CredentialManager credentialManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,52 +40,54 @@ public class sign_up_google2 extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_google2);
 
         // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
 
-        // Configure Google Sign-In using Credential Manager
-        CredentialsOptions options = new CredentialsOptions.Builder()
-                .setShowSaveDialog(true)
-                .build();
+        // Initialize Credential Manager
+        credentialManager = CredentialManager.create(this);
 
         googleSignInButton = findViewById(R.id.google_sign_in_button);
         googleSignInButton.setOnClickListener(v -> signInWithGoogle());
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        if (controller != null) {
+            controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_SWIPE);
+            controller.hide(WindowInsetsCompat.Type.systemBars());
+        }
     }
 
     private void signInWithGoogle() {
-        Intent signInIntent = Credentials.getClient(this).getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
+        GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(getString(R.string.default_web_client_id))
+                .build();
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        GetCredentialRequest request = new GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build();
 
-        if (requestCode == RC_SIGN_IN) {
-            Task<Credential> task = Credentials.getClient(this).getCredentialFromIntent(data);
-            try {
-                // Google Sign-In was successful, authenticate with Firebase
-                Credential credential = task.getResult(Status.class).getCredential();
-                if (credential != null) {
-                    firebaseAuthWithGoogle(credential.getId());
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Google Sign-In failed", e);
-                Toast.makeText(this, "Google Sign-In failed. Please try again.", Toast.LENGTH_SHORT).show();
+        Executor executor = ContextCompat.getMainExecutor(this);
+        credentialManager.getCredentialAsync(request, executor, result -> {
+            if (result.getCredential() instanceof GoogleIdTokenCredential) {
+                GoogleIdTokenCredential credential = (GoogleIdTokenCredential) result.getCredential();
+                String idToken = credential.getIdToken();
+                firebaseAuthWithGoogle(idToken);
+            } else {
+                Log.e(TAG, "Invalid credential type");
+                Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
             }
-        }
+        });
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
+        auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI
-                        updateUI(mAuth.getCurrentUser());
+                        // Sign in success
+                        updateUI(auth.getCurrentUser());
                     } else {
-                        // Sign in failed
                         Log.e(TAG, "signInWithCredential:failure", task.getException());
-                        Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
                         updateUI(null);
                     }
                 });
@@ -87,8 +95,7 @@ public class sign_up_google2 extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            // Navigate to the next activity
-            Intent intent = new Intent(sign_up_google2.this, sign_up_google3.class); // Replace with your activity
+            Intent intent = new Intent(sign_up_google2.this, sign_up_google3.class);
             startActivity(intent);
             finish();
         } else {
