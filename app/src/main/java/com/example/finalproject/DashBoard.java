@@ -212,19 +212,94 @@ public class DashBoard extends AppCompatActivity {
     }
 
     private void setupLineChart() {
-        List<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            float value = i * 5f; // Example line chart data
-            entries.add(new Entry(i, value));
+        // Lấy email từ Intent
+        String email = getIntent().getStringExtra("USER_EMAIL");
+
+        // Kiểm tra nếu email không có giá trị, xử lý lỗi
+        if (email == null || email.isEmpty()) {
+            Toast.makeText(this, "Email is missing", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Data Points");
+        // Gọi API để lấy dữ liệu số lượng ổ gà phân loại theo kích thước và email
+        apiService.countPotholesBySizeAndEmail(email).enqueue(new Callback<Map<String, Long>>() {
+            @Override
+            public void onResponse(Call<Map<String, Long>> call, Response<Map<String, Long>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Nhận dữ liệu từ API
+                    Map<String, Long> potholeData = response.body();
+                    updateLineChart(potholeData); // Cập nhật biểu đồ LineChart với dữ liệu thực
+                } else {
+                    lineChart.setNoDataText("No data available for the provided email.");
+                    lineChart.invalidate();
+                }
+            }
 
-        LineData data = new LineData(dataSet);
-
-        lineChart.setData(data);
-        lineChart.invalidate(); // Refresh biểu đồ
+            @Override
+            public void onFailure(Call<Map<String, Long>> call, Throwable t) {
+                lineChart.setNoDataText("Failed to load data: " + t.getMessage());
+                lineChart.invalidate();
+            }
+        });
     }
+
+    private void updateLineChart(Map<String, Long> potholeData) {
+        if (potholeData == null || potholeData.isEmpty()) {
+            lineChart.setNoDataText("No data available");
+            lineChart.invalidate();
+            return;
+        }
+
+        // Dữ liệu thực cho từng loại ổ gà
+        List<Entry> smallEntries = new ArrayList<>();
+        List<Entry> mediumEntries = new ArrayList<>();
+        List<Entry> bigEntries = new ArrayList<>();
+
+        // Thêm dữ liệu vào danh sách dựa trên kích thước ổ gà
+        int index = 0; // Sử dụng index làm trục X giả định
+        if (potholeData.containsKey("small")) {
+            smallEntries.add(new Entry(index++, potholeData.get("small")));
+        }
+        if (potholeData.containsKey("medium")) {
+            mediumEntries.add(new Entry(index++, potholeData.get("medium")));
+        }
+        if (potholeData.containsKey("big")) {
+            bigEntries.add(new Entry(index++, potholeData.get("big")));
+        }
+
+        // Tạo từng đường dữ liệu
+        LineDataSet smallDataSet = new LineDataSet(smallEntries, "Small Potholes");
+        smallDataSet.setColor(ColorTemplate.COLORFUL_COLORS[0]);
+        smallDataSet.setCircleColor(ColorTemplate.COLORFUL_COLORS[0]);
+
+        LineDataSet mediumDataSet = new LineDataSet(mediumEntries, "Medium Potholes");
+        mediumDataSet.setColor(ColorTemplate.COLORFUL_COLORS[1]);
+        mediumDataSet.setCircleColor(ColorTemplate.COLORFUL_COLORS[1]);
+
+        LineDataSet bigDataSet = new LineDataSet(bigEntries, "Big Potholes");
+        bigDataSet.setColor(ColorTemplate.COLORFUL_COLORS[2]);
+        bigDataSet.setCircleColor(ColorTemplate.COLORFUL_COLORS[2]);
+
+        // Thêm tất cả các tập dữ liệu vào LineData
+        LineData lineData = new LineData(smallDataSet, mediumDataSet, bigDataSet);
+        lineChart.setData(lineData);
+
+        // Cấu hình trục X
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f); // Khoảng cách giữa các nhãn trên trục X
+        xAxis.setLabelCount(index); // Số lượng nhãn hiển thị
+
+        // Cấu hình trục Y
+        YAxis leftAxis = lineChart.getAxisLeft();
+        leftAxis.setGranularity(1f);
+        leftAxis.setAxisMinimum(0); // Đảm bảo trục Y không hiển thị số âm
+
+        lineChart.getAxisRight().setEnabled(false); // Tắt trục Y bên phải
+
+        lineChart.invalidate(); // Làm mới biểu đồ
+    }
+
 
     interface ApiService {
         @GET("/map/potholes/count-by-size")
@@ -232,7 +307,12 @@ public class DashBoard extends AppCompatActivity {
 
         @GET("/map/potholes/count-by-eachday")
         Call<Map<String, Long>> countPotholesByDay();
+
+        @GET("/map/potholes/count-by-size-and-email")
+        Call<Map<String, Long>> countPotholesBySizeAndEmail(@Query("email") String email);
+
     }
+
 
     public static class Pothole {
         private String date;

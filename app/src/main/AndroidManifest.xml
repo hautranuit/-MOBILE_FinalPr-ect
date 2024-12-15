@@ -17,8 +17,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject"
+
         tools:targetApi="31"
         tools:ignore="ExtraText">
+        <meta-data
+            android:name="com.mapbox.maps.location.gms.SKIP_IF_INVALID_VERSION"
+            android:value="true" />
+
         <activity
             android:name=".ChangePassword"
             android:exported="false" />
@@ -28,7 +33,6 @@
         <activity
             android:name=".LoginScreen"
             android:exported="false"/>
-
         <activity
             android:name=".MainComponent"
             android:exported="false" />
@@ -41,6 +45,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Settings_helpCenter"
             android:exported="false" />
@@ -102,6 +107,8 @@
         <activity
             android:name=".BoxMaps"
             android:exported="false" />
+
+
         <activity
             android:name=".MainActivity"
             android:exported="false" />
