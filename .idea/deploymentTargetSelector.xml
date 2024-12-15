@@ -5,6 +5,15 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+<<<<<<< HEAD
+=======
+      <SelectionState runConfigName="DashBoard">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="BoxMaps">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+>>>>>>> da9adccfe1f8e69df367ccd851f258f399db8dee
     </selectionStates>
   </component>
 </project>
