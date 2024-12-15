@@ -38,7 +38,7 @@ public class sign_up_google4 extends AppCompatActivity {
 
             if (isValidEmail(email)) {
                 // Email hợp lệ -> Chuyển sang activity_sign_up_google2
-                Intent intent = new Intent(sign_up_google4.this, sign_up_google2.class);
+                Intent intent = new Intent(sign_up_google4.this, sign_up_google3.class);
                 intent.putExtra("email_key", email);
                 startActivity(intent);
                 finish(); // Đóng SignUp_Google4
