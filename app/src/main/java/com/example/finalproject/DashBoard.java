@@ -14,6 +14,7 @@ import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +138,9 @@ public class DashBoard extends AppCompatActivity {
         PieDataSet dataSet = new PieDataSet(entries, "Pothole Sizes");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         PieData data = new PieData(dataSet);
-
+        Description description = new Description();
+        description.setText("Count by Size");
+        pieChart.setDescription(description);
         pieChart.setData(data);
         pieChart.invalidate();
     }
@@ -196,6 +199,9 @@ public class DashBoard extends AppCompatActivity {
         leftAxis.setAxisMinimum(0); // Đảm bảo không hiển thị số âm
 
         barChart.getAxisRight().setEnabled(false); // Tắt trục Y bên phải
+        Description description = new Description();
+        description.setText("Count by Day");
+        barChart.setDescription(description);
         barChart.invalidate(); // Refresh biểu đồ
     }
     private String formatToDayMonth(String date) {
@@ -296,6 +302,11 @@ public class DashBoard extends AppCompatActivity {
         leftAxis.setAxisMinimum(0); // Đảm bảo trục Y không hiển thị số âm
 
         lineChart.getAxisRight().setEnabled(false); // Tắt trục Y bên phải
+
+        // Thay đổi mô tả label của biểu đồ thành "Count by Size and Email"
+        Description description = new Description();
+        description.setText("Count by Size and Email");
+        lineChart.setDescription(description);
 
         lineChart.invalidate(); // Làm mới biểu đồ
     }
