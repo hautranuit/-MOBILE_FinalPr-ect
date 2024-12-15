@@ -27,6 +27,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Locale;
+
+
 public class DashBoard extends AppCompatActivity {
     private PieChart pieChart;
     private BarChart barChart;
@@ -165,7 +170,9 @@ public class DashBoard extends AppCompatActivity {
         for (String date : data.keySet()) {
             int count = data.get(date) != null ? data.get(date).intValue() : 0; // Dữ liệu chỉ lấy số nguyên
             entries.add(new BarEntry(index, count));
-            labels.add(date); // Lưu ngày hoặc chỉ số hiển thị trên trục X
+
+            // Chuyển đổi định dạng ngày tháng năm -> ngày tháng
+            labels.add(formatToDayMonth(date));
             index++;
         }
 
@@ -177,12 +184,12 @@ public class DashBoard extends AppCompatActivity {
 
         // Cập nhật trục X
         XAxis xAxis = barChart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels)); // Sử dụng ngày tháng làm nhãn trục X
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1f);
+        xAxis.setGranularity(1f); // Đảm bảo mỗi nhãn là một cột
         xAxis.setLabelCount(labels.size());
 
-        // Cập nhật trục Y để hiển thị các số nguyên trên trục này
+        // Cập nhật trục Y để hiển thị các số nguyên
         YAxis leftAxis = barChart.getAxisLeft();
         leftAxis.setGranularity(1f); // Chỉ hiển thị các số nguyên
         leftAxis.setDrawLabels(true);
@@ -190,6 +197,18 @@ public class DashBoard extends AppCompatActivity {
 
         barChart.getAxisRight().setEnabled(false); // Tắt trục Y bên phải
         barChart.invalidate(); // Refresh biểu đồ
+    }
+    private String formatToDayMonth(String date) {
+        try {
+            // Định dạng ngày tháng năm gốc
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            // Định dạng ngày tháng mới
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM", Locale.getDefault());
+            return outputFormat.format(inputFormat.parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return date; // Trả về giá trị gốc nếu xảy ra lỗi
+        }
     }
 
     private void setupLineChart() {
