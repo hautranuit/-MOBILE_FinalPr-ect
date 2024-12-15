@@ -34,13 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".DashBoard"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".Settings_helpCenter"
             android:exported="false" />
@@ -89,7 +83,13 @@
             android:exported="false" />
         <activity
             android:name=".WelcomeScreen"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ForgotPassword3"
             android:exported="false" />
@@ -112,6 +112,10 @@
         <meta-data
             android:name="com.maptiler.simplemap.mapTilerKey"
             android:value="YiH4DlGyd9EnZ1UXcBUZ" />
+        <meta-data
+            android:name="com.mapbox.maps.location.gms.SKIP_IF_INVALID_VERSION"
+            android:value="true" />
+
     </application>
 
 </manifest>
