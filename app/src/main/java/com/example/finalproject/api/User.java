@@ -8,6 +8,9 @@ public class User {
 
     private  String password;
 
+    private String avatarUrl;
+
+    private String fullname;
 
     public String getRepassword() {
         return repassword;
@@ -39,5 +42,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 }

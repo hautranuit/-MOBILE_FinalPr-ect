@@ -12,12 +12,18 @@ public class SignupRequest {
 
     private String repassword;
 
+    private String avatarUrl;
+
+    private String fullname;
+
     public SignupRequest() {}
-    public SignupRequest(String username, String password, String email, String repassword) {
+    public SignupRequest(String username, String password, String email, String repassword, String avatarUrl, String fullname) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.repassword = repassword;
+        this.avatarUrl = avatarUrl;
+        this.fullname = fullname;
     }
 
     public String getRepassword() {
@@ -50,5 +56,21 @@ public class SignupRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 }
