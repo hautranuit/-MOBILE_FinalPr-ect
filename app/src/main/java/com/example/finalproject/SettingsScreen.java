@@ -89,6 +89,23 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
+        TextView helpcenter = findViewById(R.id.helpCenter);
+        helpcenter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsScreen.this, Settings_helpCenter.class);
+                startActivity(intent);
+            }
+        });
+
+        TextView Aboutus = findViewById(R.id.aboutUs);
+        Aboutus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsScreen.this, SettingsAboutUs.class);
+                startActivity(intent);
+            }
+        });
 
 
         // Kiểm tra chế độ từ SharedPreferences
