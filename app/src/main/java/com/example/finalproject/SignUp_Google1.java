@@ -29,7 +29,7 @@ public class SignUp_Google1 extends AppCompatActivity {
         TextView useAnotherAccount = findViewById(R.id.use_another_account);
         useAnotherAccount.setOnClickListener(view -> {
             // Đóng activity hiện tại và chuyển sang SignUp_Google2
-            Intent intent = new Intent(SignUp_Google1.this, sign_up_google4.class);
+            Intent intent = new Intent(SignUp_Google1.this, sign_up_google2.class);
             startActivity(intent);
             finish(); // Đóng SignUp_Google1 để không quay lại được
         });

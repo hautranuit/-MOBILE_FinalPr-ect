@@ -17,9 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject"
+        tools:ignore="ExtraText"
+        tools:targetApi="31">
+        <activity
+            android:name=".Google_SignUp"
+            android:exported="false" />
 
-        tools:targetApi="31"
-        tools:ignore="ExtraText">
         <meta-data
             android:name="com.mapbox.maps.location.gms.SKIP_IF_INVALID_VERSION"
             android:value="true" />
@@ -32,9 +35,6 @@
             android:exported="false" />
         <activity
             android:name=".LoginScreen"
-<<<<<<< HEAD
-            android:exported="false"/>
-=======
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,8 +42,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
->>>>>>> da9adccfe1f8e69df367ccd851f258f399db8dee
-
         <activity
             android:name=".MainComponent"
             android:exported="false" />
@@ -92,13 +90,15 @@
         <activity
             android:name=".sign_up_google3"
             android:exported="false" />
-        //khai bao sign_up_google
+        <activity
+            android:name=".sign_up_google2"
+            android:exported="false" />
         <activity
             android:name=".SignUp_Google1"
             android:exported="false" />
         <activity
             android:name=".WelcomeScreen"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -117,8 +117,6 @@
         <activity
             android:name=".BoxMaps"
             android:exported="false" />
-
-
         <activity
             android:name=".MainActivity"
             android:exported="false" />
@@ -132,7 +130,6 @@
         <meta-data
             android:name="com.mapbox.maps.location.gms.SKIP_IF_INVALID_VERSION"
             android:value="true" />
-
     </application>
 
 </manifest>
