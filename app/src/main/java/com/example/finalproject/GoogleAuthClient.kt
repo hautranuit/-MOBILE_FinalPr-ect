@@ -28,6 +28,7 @@ class GoogleAuthClient(
             println(tag + "already signed in")
             return true
         }
+
         return false
     }
 
@@ -41,6 +42,9 @@ class GoogleAuthClient(
             return handleSingIn(result)
         } catch (e: Exception) {
             e.printStackTrace()
+            if (e is CancellationException) throw e
+
+            println(tag + "sinIn error: ${e.message}")
             return false
         }
     }
@@ -52,8 +56,11 @@ class GoogleAuthClient(
             credential is CustomCredential &&
             credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
         ) {
+
             try {
+
                 val tokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+
                 println(tag + "name: ${tokenCredential.displayName}")
                 println(tag + "email: ${tokenCredential.id}")
                 println(tag + "image: ${tokenCredential.profilePictureUri}")
@@ -69,17 +76,19 @@ class GoogleAuthClient(
                 println(tag + "GoogleIdTokenParsingException: ${e.message}")
                 return false
             }
+
         } else {
             println(tag + "credential is not GoogleIdTokenCredential")
             return false
         }
+
     }
 
     private suspend fun buildCredentialRequest(): GetCredentialResponse {
         val request = GetCredentialRequest.Builder()
             .addCredentialOption(
                 GetGoogleIdOption.Builder()
-                    .setFilterByAuthorizedAccounts(false) // Cho phép nhập tài khoản mới
+                    .setFilterByAuthorizedAccounts(false)
                     .setServerClientId(
                         "44441641362-37jdra6d53qeeovjc10tbqes6plm5qhb.apps.googleusercontent.com"
                     )

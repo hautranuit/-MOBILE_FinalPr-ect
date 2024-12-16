@@ -33,8 +33,7 @@ class Google_SignUp : ComponentActivity() {
 
         setContent {
             MaterialTheme {
-                // Initialize `isSignIn` as false
-                var isSignIn by rememberSaveable { mutableStateOf(false) }
+                var isSignIn by rememberSaveable { mutableStateOf(googleAuthClient.isSingedIn()) }
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     // Background Image with Blur Effect
@@ -44,7 +43,7 @@ class Google_SignUp : ComponentActivity() {
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.7f)) // Light blur effect
+                            .background(Color.Black.copy(alpha = 0.7f)) // Lớp mờ trắng nhẹ phía sau
                     )
 
                     // Centered Card
@@ -82,14 +81,25 @@ class Google_SignUp : ComponentActivity() {
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // Sign In Button
+                            // Sign In/Out Button
                             ElevatedButton(
                                 onClick = {
                                     lifecycleScope.launch {
-                                        if (!isSignIn) {
+                                        if (isSignIn) {
+                                            googleAuthClient.signOut()
+                                            isSignIn = false
                                             val success = googleAuthClient.signIn()
                                             if (success) {
-                                                // Navigate to the next screen if Sign In is successful
+                                                // Chuyển sang màn hình mới nếu Sign In thành công
+                                                startActivity(
+                                                    Intent(this@Google_SignUp, sign_up_google3::class.java)
+                                                )
+                                                finish()
+                                            }
+                                        } else {
+                                            val success = googleAuthClient.signIn()
+                                            if (success) {
+                                                // Chuyển sang màn hình mới nếu Sign In thành công
                                                 startActivity(
                                                     Intent(this@Google_SignUp, sign_up_google3::class.java)
                                                 )
@@ -102,7 +112,7 @@ class Google_SignUp : ComponentActivity() {
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                             ) {
                                 Text(
-                                    text = "Sign In With Google",
+                                    text = if (isSignIn) "Sign In With Google" else "Sign In With Google",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = Color.White,
@@ -116,4 +126,3 @@ class Google_SignUp : ComponentActivity() {
         }
     }
 }
-
