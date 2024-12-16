@@ -1,6 +1,7 @@
 package com.example.finalproject;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,12 +22,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.finalproject.api.ApiClient;
+import com.example.finalproject.api.ApiResponse;
 import com.example.finalproject.api.SignupRequest;
 import com.example.finalproject.api.restful_api;
 
+import java.io.File;
 import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,6 +70,7 @@ public class DetailSignUp extends AppCompatActivity {
         String email = intent.getStringExtra("email");
         String username = intent.getStringExtra("username");
         String password = intent.getStringExtra("password");
+        String repassword = intent.getStringExtra("repassword");
         String fullName = intent.getStringExtra("fullName"); // Lấy thêm fullName
         Uri avatarUri = intent.getParcelableExtra("avatarUri");
 
@@ -113,12 +120,25 @@ public class DetailSignUp extends AppCompatActivity {
             if (name.isEmpty()) {
                 Toast.makeText(DetailSignUp.this, "Ô Name không được để trống", Toast.LENGTH_SHORT).show();
             } else {
-                SignupRequest signupRequest = new SignupRequest(username, password, email, name);
+                // Chuyển đổi các giá trị sang RequestBody
+                RequestBody emailBody = RequestBody.create(MediaType.parse("text/plain"), email != null ? email : "");
+                RequestBody passwordBody = RequestBody.create(MediaType.parse("text/plain"), password);
+                RequestBody repasswordBody = RequestBody.create(MediaType.parse("text/plain"), repassword);
+                RequestBody usernameBody = RequestBody.create(MediaType.parse("text/plain"), name);
+                RequestBody fullnameBody = RequestBody.create(MediaType.parse("text/plain"), fullName);
+
+                // Tạo MultipartBody.Part cho avatar
+                File avatarFile = new File(getRealPathFromURI(avatarUri)); // Chuyển đổi URI thành đường dẫn file
+                RequestBody avatarBody = RequestBody.create(MediaType.parse("image/*"), avatarFile);
+                MultipartBody.Part avatarPart = MultipartBody.Part.createFormData("avatar", avatarFile.getName(), avatarBody);
+
+                // Tạo API instance
                 restful_api restfulApi = ApiClient.getRetrofitInstance().create(restful_api.class);
 
-                restfulApi.signup(signupRequest).enqueue(new Callback<String>() {
+                // Gọi API
+                restfulApi.signup(emailBody, passwordBody, repasswordBody, usernameBody, fullnameBody, avatarPart).enqueue(new Callback<ApiResponse>() {
                     @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
+                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(DetailSignUp.this, "Signup successful", Toast.LENGTH_SHORT).show();
                         } else {
@@ -127,7 +147,7 @@ public class DetailSignUp extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<String> call, Throwable t) {
+                    public void onFailure(Call<ApiResponse> call, Throwable t) {
                         Toast.makeText(DetailSignUp.this, "Signup failed", Toast.LENGTH_SHORT).show();
                         Intent loginIntent = new Intent(DetailSignUp.this, LoginScreen.class);
                         startActivity(loginIntent);
@@ -153,6 +173,20 @@ public class DetailSignUp extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    private String getRealPathFromURI(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String path = cursor.getString(columnIndex);
+            cursor.close();
+            return path;
+        } else {
+            return uri.getPath(); // Trường hợp URI không phải từ media store
+        }
     }
 
     // Xử lý kết quả chọn ảnh
