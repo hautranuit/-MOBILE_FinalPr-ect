@@ -3,12 +3,18 @@ package com.example.finalproject.api;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -18,8 +24,18 @@ public interface restful_api {
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
     // Endpoint đăng ký
+//    @POST("/authentication/signup")
+//    Call<String> signup(@Body SignupRequest signupRequest);
+    @Multipart
     @POST("/authentication/signup")
-    Call<String> signup(@Body SignupRequest signupRequest);
+    Call<ApiResponse> signup(
+            @Part("email") RequestBody email,
+            @Part("password") RequestBody password,
+            @Part("repassword") RequestBody repassword,
+            @Part("username") RequestBody username,
+            @Part("fullname") RequestBody fullname,
+            @Part MultipartBody.Part avatar
+    );
 
     // Endpoint đăng xuất
     @POST("/authentication/logout")
@@ -91,4 +107,24 @@ public interface restful_api {
 
     @GET("/map/potholes/count-by-eachday")
     Call<Map<String, Long>> countPotholesByDay();
+
+    // API lấy avatar dựa trên email
+    @GET("/user/{email}/avatar")
+    Call<ResponseBody> getAvatarByEmail(@Path("email") String email);
+
+    // API xóa người dùng dựa trên email
+    @DELETE("/user/{email}")
+    Call<ApiResponse> deleteUser(@Path("email") String email);
+
+    // API đổi mật khẩu dựa trên email
+    @PUT("/user/{email}/change-password")
+    Call<ApiResponse> changePassword(
+            @Path("email") String email,
+            @Query("oldPassword") String oldPassword,
+            @Query("newPassword") String newPassword
+    );
+
+    // API lấy thông tin người dùng dựa trên email
+    @GET("/user/{email}")
+    Call<UserResponse> getUserByEmail(@Path("email") String email);
 }
