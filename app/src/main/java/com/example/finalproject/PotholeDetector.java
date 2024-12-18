@@ -10,6 +10,11 @@ public class PotholeDetector {
     private final SensorManager sensorManager;
     private final Sensor accelerometer;
     private final PotholeCallback callback;
+    private static final int SMOOTHING_WINDOW_SIZE = 5; // Số lượng mẫu để làm mượt dữ liệu
+    private float[] smoothingBuffer = new float[SMOOTHING_WINDOW_SIZE];
+    private int bufferIndex = 0;
+    private long lastDetectionTime = 0;
+    private static final long DETECTION_INTERVAL = 2000; // Thời gian tối thiểu giữa các lần phát hiện (ms)
 
     public PotholeDetector(Context context, PotholeCallback callback) {
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -33,19 +38,32 @@ public class PotholeDetector {
             float z = event.values[2];
             double magnitude = Math.sqrt(x * x + y * y + z * z);
 
+            // Làm mượt dữ liệu
+            smoothingBuffer[bufferIndex] = (float) magnitude;
+            bufferIndex = (bufferIndex + 1) % SMOOTHING_WINDOW_SIZE;
+
+            double smoothedMagnitude = 0;
+            for (float value : smoothingBuffer) {
+                smoothedMagnitude += value;
+            }
+            smoothedMagnitude /= SMOOTHING_WINDOW_SIZE;
+
             String potholeSize = null;
 
             // Phân loại kích thước ổ gà
-            if (magnitude > 15 && magnitude <= 20) {
+            if (smoothedMagnitude > 17 && smoothedMagnitude <= 22) {
                 potholeSize = "small";
-            } else if (magnitude > 20 && magnitude <= 25) {
+            } else if (smoothedMagnitude > 22 && smoothedMagnitude <= 28) {
                 potholeSize = "medium";
-            } else if (magnitude > 25) {
+            } else if (smoothedMagnitude > 28) {
                 potholeSize = "big";
             }
 
-            if (potholeSize != null) {
-                callback.onPotholeDetected(potholeSize); // Trả về kích thước ổ gà qua callback
+            // Thêm điều kiện kiểm tra khoảng thời gian giữa các lần phát hiện
+            long currentTime = System.currentTimeMillis();
+            if (potholeSize != null && currentTime - lastDetectionTime > DETECTION_INTERVAL) {
+                lastDetectionTime = currentTime;
+                callback.onPotholeDetected(potholeSize);
             }
         }
 
@@ -55,6 +73,6 @@ public class PotholeDetector {
 
     // Giao diện callback cho sự kiện phát hiện ổ gà
     public interface PotholeCallback {
-        void onPotholeDetected(String size); // Thay đổi để trả về kích thước ổ gà
+        void onPotholeDetected(String size); // Trả về kích thước ổ gà qua callback
     }
 }
