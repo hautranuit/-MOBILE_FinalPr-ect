@@ -65,7 +65,8 @@ public class SettingsScreen extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent intent = new Intent(SettingsScreen.this, MainComponent.class);
+                startActivity(intent);
             }
         });
 

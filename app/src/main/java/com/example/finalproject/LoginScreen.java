@@ -84,7 +84,7 @@ public class LoginScreen extends AppCompatActivity {
                             Toast.makeText(LoginScreen.this, "Login successful", Toast.LENGTH_SHORT).show();
 
                             // Truyền email sang DashboardActivity
-                            Intent intent = new Intent(LoginScreen.this,DashBoard.class); // Đổi tên từ BoxMaps thành DashboardActivity
+                            Intent intent = new Intent(LoginScreen.this,BoxMaps.class); // Đổi tên từ BoxMaps thành DashboardActivity
                             intent.putExtra("USER_EMAIL", email); // Truyền email vào Intent
                             startActivity(intent);
                             finish();
