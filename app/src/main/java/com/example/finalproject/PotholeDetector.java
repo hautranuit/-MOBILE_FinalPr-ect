@@ -14,7 +14,7 @@ public class PotholeDetector {
     private float[] smoothingBuffer = new float[SMOOTHING_WINDOW_SIZE];
     private int bufferIndex = 0;
     private long lastDetectionTime = 0;
-    private static final long DETECTION_INTERVAL = 2000; // Thời gian tối thiểu giữa các lần phát hiện (ms)
+    private static final long DETECTION_INTERVAL = 1500; // Thời gian tối thiểu giữa các lần phát hiện (ms)
 
     public PotholeDetector(Context context, PotholeCallback callback) {
         this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -42,6 +42,7 @@ public class PotholeDetector {
             smoothingBuffer[bufferIndex] = (float) magnitude;
             bufferIndex = (bufferIndex + 1) % SMOOTHING_WINDOW_SIZE;
 
+            // Tìm giá trị lớn nhất trong cửa sổ làm mượt
             double smoothedMagnitude = 0;
             for (float value : smoothingBuffer) {
                 smoothedMagnitude += value;
@@ -51,11 +52,11 @@ public class PotholeDetector {
             String potholeSize = null;
 
             // Phân loại kích thước ổ gà
-            if (smoothedMagnitude > 17 && smoothedMagnitude <= 22) {
+            if (smoothedMagnitude > 15 && smoothedMagnitude <= 20) {
                 potholeSize = "small";
-            } else if (smoothedMagnitude > 22 && smoothedMagnitude <= 28) {
+            } else if (smoothedMagnitude > 20 && smoothedMagnitude <= 25) {
                 potholeSize = "medium";
-            } else if (smoothedMagnitude > 28) {
+            } else if (smoothedMagnitude > 25) {
                 potholeSize = "big";
             }
 
