@@ -1,6 +1,7 @@
 package com.example.finalproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -82,6 +83,12 @@ public class LoginScreen extends AppCompatActivity {
                             String email = email_input.getText().toString().trim();
                             String token = response.body().getToken();
                             Toast.makeText(LoginScreen.this, "Login successful", Toast.LENGTH_SHORT).show();
+
+                            // Lưu email vào SharedPreferences
+                            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("USER_EMAIL", email);
+                            editor.apply();
 
                             // Truyền email sang DashboardActivity
                             Intent intent = new Intent(LoginScreen.this,BoxMaps.class); // Đổi tên từ BoxMaps thành DashboardActivity

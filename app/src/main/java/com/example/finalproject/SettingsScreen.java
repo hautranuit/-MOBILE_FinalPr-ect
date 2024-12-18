@@ -3,6 +3,7 @@ package com.example.finalproject;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -24,6 +25,8 @@ import com.example.finalproject.api.restful_api;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SettingsScreen extends AppCompatActivity {
     private Switch darkModeSwitch;
@@ -37,38 +40,74 @@ public class SettingsScreen extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_settings_screen);
 
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         email = intent.getStringExtra("userEmail"); // Nhận email từ Intent
 
         if (email == null || email.isEmpty()) {
             Toast.makeText(this, "Email không hợp lệ hoặc trống!", Toast.LENGTH_SHORT).show();
             return;
+        }*/
+
+        //String loggedInEmail = getIntent().getStringExtra("USER_EMAIL");
+
+        // Lấy email từ SharedPreferences một lần
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String loggedInEmail = sharedPreferences.getString("USER_EMAIL", null);
+        if (loggedInEmail == null || loggedInEmail.isEmpty()) {
+            Toast.makeText(this, "Không tìm thấy email đăng nhập", Toast.LENGTH_SHORT).show();
+            return; // Không thực hiện tiếp nếu không có email
         }
 
+        // Lấy chế độ tối từ SharedPreferences
+        boolean isDarkMode = sharedPreferences.getBoolean("DarkMode", false);
 
+        // Đặt chế độ ban đầu
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+        // Gán switch chế độ tối
+        darkModeSwitch = findViewById(R.id.darkModeSwitch);
+        darkModeSwitch.setChecked(isDarkMode);
+
+        // Lắng nghe sự kiện bấm switch để thay đổi chế độ sáng/tối
+        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+
+            // Lưu trạng thái vào SharedPreferences
+            editor = sharedPreferences.edit();
+            editor.putBoolean("DarkMode", isChecked);
+            editor.apply();
+        });
         // Xử lý khi người dùng nhấn vào TextView để xóa tài khoản
-        TextView removeAccount = findViewById(R.id.removeAccount);  // Lấy TextView
+        TextView removeAccount = findViewById(R.id.removeAccount);
 
         removeAccount.setOnClickListener(view -> {
-            // Gọi hàm xóa tài khoản
-            deleteAccount(email);
+            //String loggedInEmail = "22520433@gm.uit.edu.vn"; // Lấy email từ session hoặc SharedPreferences
+            deleteUser(loggedInEmail);
         });
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        setUpNavigation();
+    }
+    private void setUpNavigation() {
         ImageView backButton = findViewById(R.id.backButton);
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsScreen.this, MainComponent.class);
-                startActivity(intent);
-            }
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(SettingsScreen.this, MainComponent.class);
+            startActivity(intent);
         });
+
 
         TextView languages = findViewById(R.id.languages);
 
@@ -138,7 +177,7 @@ public class SettingsScreen extends AppCompatActivity {
 
 
         // Kiểm tra chế độ từ SharedPreferences
-        sharedPreferences = getSharedPreferences("AppSettingsPrefs", 0);
+        /*sharedPreferences = getSharedPreferences("AppSettingsPrefs", 0);
         boolean isDarkMode = sharedPreferences.getBoolean("DarkMode", false);
 
         // Đặt chế độ ban đầu
@@ -163,29 +202,53 @@ public class SettingsScreen extends AppCompatActivity {
             editor = sharedPreferences.edit();
             editor.putBoolean("DarkMode", isChecked);
             editor.apply();
-        });
+        });*/
 
     }
 
     // Phương thức xóa tài khoản
-    private void deleteAccount(String email) {
-        restful_api restfulApi = ApiClient.getRetrofitInstance().create(restful_api.class);
-        Call<ApiResponse> call = restfulApi.deleteUser(email);
+    private void deleteUser(String email) {
+        restful_api apiService = ApiClient.getRetrofitInstance().create(restful_api.class);
+
+        Call<ApiResponse> call = apiService.deleteUser(email);
 
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                Log.d("API_RESPONSE", "Code: " + response.code());
+                Log.d("API_RESPONSE", "Message: " + response.message());
+
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(SettingsScreen.this, "Tài khoản đã được xóa thành công!", Toast.LENGTH_SHORT).show();
+                    ApiResponse apiResponse = response.body();
+                    Log.d("API_RESPONSE", "Success: " + apiResponse.isSuccess());
+                    Log.d("API_RESPONSE", "Message: " + apiResponse.getMessage());
+
+                    if (apiResponse.isSuccess()) {
+                        Toast.makeText(getApplicationContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(SettingsScreen.this, "Không thể xóa tài khoản. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                    String errorBody = "";
+                    try {
+                        errorBody = response.errorBody().string();
+                        Log.e("API_ERROR", "Error body: " + errorBody);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(getApplicationContext(), "Lỗi xóa người dùng: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Toast.makeText(SettingsScreen.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API_FAILURE", "Error: " + t.getMessage());
+                Toast.makeText(getApplicationContext(), "Không thể kết nối tới máy chủ.", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
+
 }
