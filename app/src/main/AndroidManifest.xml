@@ -20,6 +20,9 @@
         tools:ignore="ExtraText"
         tools:targetApi="31">
         <activity
+            android:name=".SettingsPrivacyPolicy"
+            android:exported="false" />
+        <activity
             android:name=".SettingsAboutUs"
             android:exported="false" />
         <activity
@@ -62,7 +65,13 @@
             android:exported="false" />
         <activity
             android:name=".SettingsScreen"
-            android:exported="false"/>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".SignUpYourname"
             android:exported="false" />
@@ -95,12 +104,7 @@
             android:exported="false" />
         <activity
             android:name=".WelcomeScreen"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".ForgotPassword3"
             android:exported="false" />

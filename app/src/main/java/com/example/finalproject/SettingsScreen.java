@@ -51,7 +51,7 @@ public class SettingsScreen extends AppCompatActivity {
         //String loggedInEmail = getIntent().getStringExtra("USER_EMAIL");
 
         // Lấy email từ SharedPreferences một lần
-        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        /*sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String loggedInEmail = sharedPreferences.getString("USER_EMAIL", null);
         if (loggedInEmail == null || loggedInEmail.isEmpty()) {
             Toast.makeText(this, "Không tìm thấy email đăng nhập", Toast.LENGTH_SHORT).show();
@@ -84,14 +84,14 @@ public class SettingsScreen extends AppCompatActivity {
             editor = sharedPreferences.edit();
             editor.putBoolean("DarkMode", isChecked);
             editor.apply();
-        });
+        });*/
         // Xử lý khi người dùng nhấn vào TextView để xóa tài khoản
-        TextView removeAccount = findViewById(R.id.removeAccount);
+        /*TextView removeAccount = findViewById(R.id.removeAccount);
 
         removeAccount.setOnClickListener(view -> {
             //String loggedInEmail = "22520433@gm.uit.edu.vn"; // Lấy email từ session hoặc SharedPreferences
             deleteUser(loggedInEmail);
-        });
+        });*/
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -175,9 +175,18 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
+        TextView PrivacyPolicy = findViewById(R.id.privacyPolicy);
+        PrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsScreen.this, SettingsPrivacyPolicy.class);
+                startActivity(intent);
+            }
+        });
+
 
         // Kiểm tra chế độ từ SharedPreferences
-        /*sharedPreferences = getSharedPreferences("AppSettingsPrefs", 0);
+        sharedPreferences = getSharedPreferences("AppSettingsPrefs", 0);
         boolean isDarkMode = sharedPreferences.getBoolean("DarkMode", false);
 
         // Đặt chế độ ban đầu
@@ -202,7 +211,7 @@ public class SettingsScreen extends AppCompatActivity {
             editor = sharedPreferences.edit();
             editor.putBoolean("DarkMode", isChecked);
             editor.apply();
-        });*/
+        });
 
     }
 

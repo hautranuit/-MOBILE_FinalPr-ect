@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsPrivacyPolicy">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/tv_privacy_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Privacy Policy"
+                android:textSize="24sp"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="16dp" />
+
+            <!-- Subtitle -->
+            <TextView
+                android:id="@+id/tv_privacy_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your Privacy Matters to Us"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="12dp" />
+
+            <!-- Content Section 1 -->
+            <TextView
+                android:id="@+id/tv_privacy_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="We are committed to protecting your personal data. This policy explains how we collect, use, and safeguard your information."
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="16dp" />
+
+            <TextView
+                android:id="@+id/tv_privacy_section_1_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1. Information We Collect"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tv_privacy_section_1_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="We collect location data, device information, and user feedback to improve the app’s functionality and enhance your experience."
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="16dp" />
+
+            <!-- Content Section 2 -->
+            <TextView
+                android:id="@+id/tv_privacy_section_2_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2. How We Use Your Information"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tv_privacy_section_2_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your data helps us identify and report potholes, optimize navigation, and provide a safer driving experience."
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="16dp" />
+
+            <!-- Content Section 3 -->
+            <TextView
+                android:id="@+id/tv_privacy_section_3_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3. Your Rights"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tv_privacy_section_3_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="You have the right to access, update, or delete your data at any time. For assistance, please contact our support team."
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="24dp" />
+
+            <CheckBox
+                android:id="@+id/cb_privacy_agree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="20dp"
+                android:buttonTint="@android:color/white"
+                android:fontFamily="@font/poppins_light"
+                android:text="I have read and agree to the Privacy Policy"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <!-- Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="40dp"
+                android:gravity="end">
+
+                <Button
+                    android:id="@+id/btn_privacy_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:backgroundTint="#4B3621"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_privacy_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm"
+                    android:backgroundTint="#4B3621"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
