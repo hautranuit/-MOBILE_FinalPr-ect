@@ -127,4 +127,9 @@ public interface restful_api {
     // API lấy thông tin người dùng dựa trên email
     @GET("/user/{email}")
     Call<UserResponse> getUserByEmail(@Path("email") String email);
+
+    //API lấy danh sách thông tin những ổ gà một người đã khai báo
+    @GET("/potholes/user-reports")
+    Call<List<Map<String, Object>>> getPotholesReportedByUser(@Query("email") String email);
+
 }
