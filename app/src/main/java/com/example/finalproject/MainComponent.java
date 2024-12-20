@@ -58,6 +58,8 @@ public class MainComponent extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainComponent.this, SettingsScreen.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
                 startActivity(intent);
             }
         });

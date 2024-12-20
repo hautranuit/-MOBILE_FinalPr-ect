@@ -113,7 +113,7 @@ public interface restful_api {
     Call<ResponseBody> getAvatarByEmail(@Path("email") String email);
 
     // API xóa người dùng dựa trên email
-    @DELETE("/user/{email}")
+    @DELETE("/authentication/{email}")
     Call<ApiResponse> deleteUser(@Path("email") String email);
 
     // API đổi mật khẩu dựa trên email

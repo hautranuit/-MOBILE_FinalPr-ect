@@ -288,7 +288,10 @@ public class BoxMaps extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_box_maps);
+
+        //Nhận dữ liệu từ intent
         userEmail = getIntent().getStringExtra("USER_EMAIL");
+
 
         mapView = findViewById(R.id.mapView);
         focusLocationBtn = findViewById(R.id.focusLocation);
@@ -340,6 +343,8 @@ public class BoxMaps extends AppCompatActivity {
             public void onClick(View v) {
                 // Chuyển sang Activity mới
                 Intent intent = new Intent(BoxMaps.this, MainComponent.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
                 startActivity(intent);
             }
         });
