@@ -132,6 +132,12 @@ public class LoginScreen extends AppCompatActivity {
 
         Intent intent = new Intent(LoginScreen.this, SettingsScreen.class);
         intent.putExtra("userEmail", email); // Gửi email qua Intent
+
+        Intent intentDashboard = new Intent(LoginScreen.this, DashBoard.class);
+        intentDashboard.putExtra("userEmail", email);
         //startActivity(intent);
+
+
+
     }
 }

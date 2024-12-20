@@ -129,7 +129,8 @@ public interface restful_api {
     Call<UserResponse> getUserByEmail(@Path("email") String email);
 
     //API lấy danh sách thông tin những ổ gà một người đã khai báo
-    @GET("/potholes/user-reports")
+    @GET("/map/potholes/user-reports")
     Call<List<Map<String, Object>>> getPotholesReportedByUser(@Query("email") String email);
+
 
 }

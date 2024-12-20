@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/app/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -41,7 +41,7 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         android:layout_weight="1"
-        android:layout_marginBottom="4dp"> <!-- Thêm khoảng cách nhỏ giữa các biểu đồ -->
+        android:layout_marginBottom="4dp">
 
       <!-- BarChart Container -->
       <FrameLayout
@@ -64,7 +64,7 @@
           android:layout_weight="1"
           android:background="@drawable/stat_container"
           android:padding="4dp"
-          android:layout_marginStart="4dp"> <!-- Thêm khoảng cách nhỏ -->
+          android:layout_marginStart="4dp">
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pie_chart"
@@ -73,20 +73,43 @@
       </FrameLayout>
     </LinearLayout>
 
-    <!-- LineChart Section -->
-    <FrameLayout
+    <!-- LineChart + PieChart Section -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:orientation="horizontal"
         android:layout_weight="1"
-        android:background="@drawable/stat_container"
-        android:padding="4dp"
-        android:layout_marginTop="4dp"> <!-- Thêm khoảng cách nhỏ giữa biểu đồ và nút phía dưới -->
+        android:layout_marginTop="4dp">
 
-      <com.github.mikephil.charting.charts.LineChart
-          android:id="@+id/line_chart"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent" />
-    </FrameLayout>
+      <!-- LineChart Container -->
+      <FrameLayout
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:background="@drawable/stat_container"
+          android:padding="4dp">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+      </FrameLayout>
+
+      <!-- PieChart Container -->
+      <FrameLayout
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:background="@drawable/stat_container"
+          android:padding="4dp"
+          android:layout_marginStart="4dp">
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/second_pie_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+      </FrameLayout>
+    </LinearLayout>
 
     <!-- Nút Refresh Data -->
     <LinearLayout

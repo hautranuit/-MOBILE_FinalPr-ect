@@ -699,4 +699,5 @@ public class BoxMaps extends AppCompatActivity {
         Toast.makeText(this, "All data deleted", Toast.LENGTH_SHORT).show();
     }
 
+
 }

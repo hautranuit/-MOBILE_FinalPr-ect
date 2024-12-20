@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.content.Intent;
+import android.graphics.Color;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -19,6 +21,9 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.HashMap;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +40,7 @@ import java.util.Locale;
 
 public class DashBoard extends AppCompatActivity {
     private PieChart pieChart;
+    private PieChart secondPieChart;
     private BarChart barChart;
     private LineChart lineChart;
     private ApiService apiService;
@@ -52,6 +58,11 @@ public class DashBoard extends AppCompatActivity {
             return insets;
         });
 
+        Intent intentDashboard = getIntent();
+
+        // Lấy giá trị email từ Intent
+        String email = intentDashboard.getStringExtra("USER_EMAIL");
+
         // Khởi tạo Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://finalmap.click/")
@@ -62,13 +73,16 @@ public class DashBoard extends AppCompatActivity {
 
         // Khởi tạo các biểu đồ
         pieChart = findViewById(R.id.pie_chart);
+        secondPieChart = findViewById(R.id.second_pie_chart);
         barChart = findViewById(R.id.column_chart);
         lineChart = findViewById(R.id.line_chart);
 
         // Thiết lập các biểu đồ
         setupPieChart();
+        setupSecondPieChart();
         setupBarChart();
         setupLineChart();
+
 
         // Button Refresh Data
         findViewById(R.id.refresh_data_button).setOnClickListener(v -> refreshData());
@@ -122,6 +136,57 @@ public class DashBoard extends AppCompatActivity {
             }
         });
     }
+    private void setupSecondPieChart() {
+        // Gọi API với email cụ thể
+        Call<Map<String, Long>> call = apiService.countPotholesBySizeAndEmail("22520412@gm.uit.edu.vn");
+
+        call.enqueue(new Callback<Map<String, Long>>() {
+            @Override
+            public void onResponse(Call<Map<String, Long>> call, Response<Map<String, Long>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Cập nhật biểu đồ với dữ liệu trả về
+                    updateSecondPieChart(response.body());
+                } else {
+                    secondPieChart.setNoDataText("No data available.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Long>> call, Throwable t) {
+                secondPieChart.setNoDataText("Failed to load data.");
+                t.printStackTrace();
+            }
+        });
+    }
+    private void updateSecondPieChart(Map<String, Long> data) {
+        // Đảm bảo rằng dữ liệu không rỗng
+        if (data == null || data.isEmpty()) {
+            secondPieChart.setNoDataText("No data available");
+            return;
+        }
+
+        List<PieEntry> entries = new ArrayList<>();
+
+        // Lấy giá trị cho các size "small", "medium", "big"
+        int smallCount = data.getOrDefault("small", 0L).intValue();
+        int mediumCount = data.getOrDefault("medium", 0L).intValue();
+        int bigCount = data.getOrDefault("big", 0L).intValue();
+
+        if (smallCount > 0) entries.add(new PieEntry(smallCount, "Small"));
+        if (mediumCount > 0) entries.add(new PieEntry(mediumCount, "Medium"));
+        if (bigCount > 0) entries.add(new PieEntry(bigCount, "Big"));
+
+        PieDataSet dataSet = new PieDataSet(entries, "Pothole Sizes by Email");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        PieData pieData = new PieData(dataSet);
+
+        Description description = new Description();
+        description.setText("Potholes by Email");
+        secondPieChart.setDescription(description);
+
+        secondPieChart.setData(pieData);
+        secondPieChart.invalidate(); // Làm mới biểu đồ
+    }
 
     private void updatePieChart(int smallCount, int mediumCount, int bigCount) {
         if (smallCount == 0 && mediumCount == 0 && bigCount == 0) {
@@ -166,12 +231,24 @@ public class DashBoard extends AppCompatActivity {
     }
 
     private void updateBarChart(Map<String, Long> data) {
+        // Sắp xếp dữ liệu theo ngày
+        Map<String, Long> sortedData = new TreeMap<>((date1, date2) -> {
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                return dateFormat.parse(date1).compareTo(dateFormat.parse(date2));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return 0; // Nếu lỗi, giữ nguyên thứ tự
+            }
+        });
+        sortedData.putAll(data);
+
         List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
         int index = 0; // Chỉ số index trên trục X
-        for (String date : data.keySet()) {
-            int count = data.get(date) != null ? data.get(date).intValue() : 0; // Dữ liệu chỉ lấy số nguyên
+        for (String date : sortedData.keySet()) {
+            int count = sortedData.get(date) != null ? sortedData.get(date).intValue() : 0; // Dữ liệu chỉ lấy số nguyên
             entries.add(new BarEntry(index, count));
 
             // Chuyển đổi định dạng ngày tháng năm -> ngày tháng
@@ -204,6 +281,7 @@ public class DashBoard extends AppCompatActivity {
         barChart.setDescription(description);
         barChart.invalidate(); // Refresh biểu đồ
     }
+
     private String formatToDayMonth(String date) {
         try {
             // Định dạng ngày tháng năm gốc
@@ -218,98 +296,109 @@ public class DashBoard extends AppCompatActivity {
     }
 
     private void setupLineChart() {
-        // Lấy email từ Intent
-        String email = getIntent().getStringExtra("USER_EMAIL");
+        // Email cố định để gọi API
+        String email = "22520412@gm.uit.edu.vn";
 
-        // Kiểm tra nếu email không có giá trị, xử lý lỗi
-        if (email == null || email.isEmpty()) {
-            Toast.makeText(this, "Email is missing", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Gọi API để lấy dữ liệu số lượng ổ gà phân loại theo kích thước và email
-        apiService.countPotholesBySizeAndEmail(email).enqueue(new Callback<Map<String, Long>>() {
+        // Gọi API để lấy danh sách ổ gà
+        apiService.getPotholesReportedByUser(email).enqueue(new Callback<List<Map<String, Object>>>() {
             @Override
-            public void onResponse(Call<Map<String, Long>> call, Response<Map<String, Long>> response) {
+            public void onResponse(Call<List<Map<String, Object>>> call, Response<List<Map<String, Object>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Nhận dữ liệu từ API
-                    Map<String, Long> potholeData = response.body();
-                    updateLineChart(potholeData); // Cập nhật biểu đồ LineChart với dữ liệu thực
+                    // Gọi phương thức để cập nhật biểu đồ
+                    updateLineChart(response.body(), email);
                 } else {
-                    lineChart.setNoDataText("No data available for the provided email.");
+                    // Nếu không có dữ liệu, hiển thị thông báo
+                    lineChart.setNoDataText("No data available for the provided email: " + email);
                     lineChart.invalidate();
                 }
             }
 
             @Override
-            public void onFailure(Call<Map<String, Long>> call, Throwable t) {
+            public void onFailure(Call<List<Map<String, Object>>> call, Throwable t) {
+                // Nếu có lỗi khi gọi API
                 lineChart.setNoDataText("Failed to load data: " + t.getMessage());
                 lineChart.invalidate();
             }
         });
+
+        // Thiết lập LineChart
+        lineChart.getDescription().setEnabled(false);
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(true);
+        lineChart.setTouchEnabled(true);
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(5, true);
+
+        YAxis yAxis = lineChart.getAxisLeft();
+        yAxis.setGranularity(1f);
+        lineChart.getAxisRight().setEnabled(false);
     }
 
-    private void updateLineChart(Map<String, Long> potholeData) {
-        if (potholeData == null || potholeData.isEmpty()) {
-            lineChart.setNoDataText("No data available");
+    private void updateLineChart(List<Map<String, Object>> data, String email) {
+        // Tạo Map để nhóm dữ liệu theo ngày với key là email và value là số lượng ổ gà
+        Map<String, Integer> potholesPerDay = new HashMap<>();
+        List<String> dates = new ArrayList<>();  // Danh sách lưu trữ ngày để sử dụng trên trục X
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM"); // Định dạng ngày tháng (dd/MM)
+
+        // Lặp qua danh sách dữ liệu trả về từ API
+        for (Map<String, Object> entry : data) {
+            // Lấy giá trị từ timeReported và chia tách thành ngày
+            String timestamp = entry.get("timeReported").toString();
+            String date = timestamp.split("T")[0];  // Lấy ngày (yyyy-MM-dd)
+
+            // Tính số lượng ổ gà trong mỗi ngày
+            potholesPerDay.put(date, potholesPerDay.getOrDefault(date, 0) + 1);
+        }
+
+        // Kiểm tra nếu không có dữ liệu
+        if (potholesPerDay.isEmpty()) {
+            lineChart.setNoDataText("No data available for the provided email.");
             lineChart.invalidate();
             return;
         }
 
-        // Dữ liệu thực cho từng loại ổ gà
-        List<Entry> smallEntries = new ArrayList<>();
-        List<Entry> mediumEntries = new ArrayList<>();
-        List<Entry> bigEntries = new ArrayList<>();
-
-        // Thêm dữ liệu vào danh sách dựa trên kích thước ổ gà
-        int index = 0; // Sử dụng index làm trục X giả định
-        if (potholeData.containsKey("small")) {
-            smallEntries.add(new Entry(index++, potholeData.get("small")));
-        }
-        if (potholeData.containsKey("medium")) {
-            mediumEntries.add(new Entry(index++, potholeData.get("medium")));
-        }
-        if (potholeData.containsKey("big")) {
-            bigEntries.add(new Entry(index++, potholeData.get("big")));
+        // Tạo các entry cho biểu đồ (dữ liệu ngày và số lượng ổ gà)
+        List<Entry> entries = new ArrayList<>();
+        int i = 0;  // Đếm các ngày để gán chỉ số cho từng Entry
+        for (Map.Entry<String, Integer> entry : potholesPerDay.entrySet()) {
+            // Định dạng lại ngày từ "yyyy-MM-dd" sang "dd/MM"
+            try {
+                String formattedDate = dateFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(entry.getKey()));
+                dates.add(formattedDate);  // Thêm ngày đã được định dạng vào danh sách dates
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            entries.add(new Entry(i++, entry.getValue()));
         }
 
-        // Tạo từng đường dữ liệu
-        LineDataSet smallDataSet = new LineDataSet(smallEntries, "Small Potholes");
-        smallDataSet.setColor(ColorTemplate.COLORFUL_COLORS[0]);
-        smallDataSet.setCircleColor(ColorTemplate.COLORFUL_COLORS[0]);
+        // Tạo dataset cho LineChart
+        LineDataSet dataSet = new LineDataSet(entries, "Potholes per Day for account ");
+        dataSet.setColor(Color.BLUE);  // Màu sắc cho đường biểu đồ
+        dataSet.setValueTextColor(Color.BLACK);  // Màu sắc cho giá trị biểu đồ
 
-        LineDataSet mediumDataSet = new LineDataSet(mediumEntries, "Medium Potholes");
-        mediumDataSet.setColor(ColorTemplate.COLORFUL_COLORS[1]);
-        mediumDataSet.setCircleColor(ColorTemplate.COLORFUL_COLORS[1]);
-
-        LineDataSet bigDataSet = new LineDataSet(bigEntries, "Big Potholes");
-        bigDataSet.setColor(ColorTemplate.COLORFUL_COLORS[2]);
-        bigDataSet.setCircleColor(ColorTemplate.COLORFUL_COLORS[2]);
-
-        // Thêm tất cả các tập dữ liệu vào LineData
-        LineData lineData = new LineData(smallDataSet, mediumDataSet, bigDataSet);
+        // Tạo LineData và gán vào biểu đồ
+        LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
 
-        // Cấu hình trục X
+        // Thiết lập trục Y bắt đầu từ 0
+        YAxis yAxis = lineChart.getAxisLeft();
+        yAxis.setAxisMinimum(0f);  // Đảm bảo trục Y bắt đầu từ 0
+        lineChart.getAxisRight().setEnabled(false);  // Tắt trục Y bên phải
+
+        // Thiết lập trục X và định dạng ngày
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1f); // Khoảng cách giữa các nhãn trên trục X
-        xAxis.setLabelCount(index); // Số lượng nhãn hiển thị
+        xAxis.setGranularity(1f);  // Đảm bảo có một điểm trên trục X cho mỗi ngày
+        xAxis.setLabelCount(dates.size(), true); // Đảm bảo có đủ số lượng nhãn
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(dates)); // Dùng danh sách ngày đã định dạng
 
-        // Cấu hình trục Y
-        YAxis leftAxis = lineChart.getAxisLeft();
-        leftAxis.setGranularity(1f);
-        leftAxis.setAxisMinimum(0); // Đảm bảo trục Y không hiển thị số âm
-
-        lineChart.getAxisRight().setEnabled(false); // Tắt trục Y bên phải
-
-        // Thay đổi mô tả label của biểu đồ thành "Count by Size and Email"
-        Description description = new Description();
-        description.setText("Count by Size and Email");
-        lineChart.setDescription(description);
-
-        lineChart.invalidate(); // Làm mới biểu đồ
+        // Cập nhật biểu đồ
+        lineChart.invalidate();
     }
+
 
 
     interface ApiService {
@@ -321,6 +410,9 @@ public class DashBoard extends AppCompatActivity {
 
         @GET("/map/potholes/count-by-size-and-email")
         Call<Map<String, Long>> countPotholesBySizeAndEmail(@Query("email") String email);
+
+        @GET("/map/potholes/user-reports")
+        Call<List<Map<String, Object>>> getPotholesReportedByUser(@Query("email") String email);
 
     }
 
