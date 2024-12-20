@@ -34,7 +34,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.finalproject.api.ApiClient;
+import com.example.finalproject.api.ApiResponse;
 import com.example.finalproject.api.Pothole;
+import com.example.finalproject.api.restful_api;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -120,6 +123,15 @@ import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
 import kotlin.jvm.functions.Function1;
+import com.example.finalproject.api.ApiClient;
+import com.example.finalproject.api.ApiResponse;
+import com.example.finalproject.api.restful_api;
+import com.bumptech.glide.Glide;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import com.example.finalproject.DashBoard;
 
 
@@ -136,6 +148,7 @@ public class BoxMaps extends AppCompatActivity {
     private Button reportButton;
     private DatabaseHelper dbHelper;
     private String userEmail;
+    private CircleImageView profileImage;
 
     private final LocationObserver locationObserver = new LocationObserver() {
         @Override
@@ -288,10 +301,12 @@ public class BoxMaps extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_box_maps);
+        Log.d("BoxMapsStatus", "BoxMaps Activity started");
 
         //Nhận dữ liệu từ intent
         userEmail = getIntent().getStringExtra("USER_EMAIL");
 
+        Log.d("BoxMapsStatus", "Received email: " + userEmail);
 
         mapView = findViewById(R.id.mapView);
         focusLocationBtn = findViewById(R.id.focusLocation);
@@ -348,6 +363,9 @@ public class BoxMaps extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //Gọi API để lấy avatar
+        fetchAvatar(userEmail);
 
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(BoxMaps.this).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(BoxMaps.this).build());
@@ -705,6 +723,29 @@ public class BoxMaps extends AppCompatActivity {
     private void deleteAllDatabaseData() {
         dbHelper.deleteAllData();
         Toast.makeText(this, "All data deleted", Toast.LENGTH_SHORT).show();
+    }
+
+    private void fetchAvatar(String email) {
+        restful_api apiService = ApiClient.getRetrofitInstance().create(restful_api.class);
+
+        apiService.getAvatarByEmail(email).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Sử dụng Glide để load ảnh
+                    Glide.with(BoxMaps.this)
+                            .load(response.body().byteStream()) // Tải ảnh từ stream
+                            .into(profileImage);
+                } else {
+                    Toast.makeText(BoxMaps.this, "Failed to load avatar", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(BoxMaps.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

@@ -82,8 +82,6 @@ public class ChangePassword extends AppCompatActivity {
         });
 
 
-
-
         ImageView eyeIconCurrent = findViewById(R.id.eye_icon_current);
         ImageView eyeIconNew = findViewById(R.id.eye_icon_new);
         ImageView eyeIconConfirm = findViewById(R.id.eye_icon_confirm);
