@@ -40,7 +40,7 @@
             android:name=".Customize"
             android:exported="false" />
         <activity
-            android:name=".LoginScreen"
+            android:name=".SettingsScreen"
             android:exported="false" />
         <activity
             android:name=".MainComponent"
@@ -64,7 +64,7 @@
             android:name=".Settings_englishLanguage"
             android:exported="false" />
         <activity
-            android:name=".SettingsScreen"
+            android:name=".LoginScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

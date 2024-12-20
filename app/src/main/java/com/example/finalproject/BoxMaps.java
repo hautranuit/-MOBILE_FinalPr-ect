@@ -296,6 +296,8 @@ public class BoxMaps extends AppCompatActivity {
         mapboxManeuverView = findViewById(R.id.maneuverView);
 
         potholeReporter = new PotholeReporter(this, mapView);
+
+        potholeReporter.startListeningCameraChange();
         loadPotholes();
 
         //emailEditText = findViewById(R.id.emailEditText);
@@ -588,6 +590,7 @@ public class BoxMaps extends AppCompatActivity {
         mapboxNavigation.unregisterRoutesObserver(routesObserver);
         mapboxNavigation.unregisterLocationObserver(locationObserver);
         potholeDetector.stopDetection();
+        potholeReporter.stopListeningCameraChange();
     }
     private void showReportDialog() {
         String[] sizes = {"Small", "Medium", "Big"};

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Location;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -44,7 +45,10 @@ public class PotholeReporter {
     private final MapView mapView;
     private PointAnnotationManager pointAnnotationManager;
     private Point point;  // Lưu trữ tọa độ của pothole
-    private long lastCameraUpdateTime = 0;  // Để kiểm tra thời gian thay đổi camera
+    private long lastCameraUpdateTime = 0;
+    private Handler handler = new Handler();
+    private Runnable cameraUpdateRunnable;
+    private long updateInterval = 3000;// Để kiểm tra thời gian thay đổi camera
 
     private final DatabaseHelper dbHelper;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
@@ -95,59 +99,62 @@ public class PotholeReporter {
     }
 
     public void addMarker(Point point, String size) {
-        mapView.getMapboxMap().getStyle(style -> {
-            if (style != null) {
-                AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
-                pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
+        if (pointAnnotationManager == null) {
+            AnnotationPlugin annotationPlugin = AnnotationPluginImplKt.getAnnotations(mapView);
+            pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, mapView);
+        }
 
-                // Tải ảnh dựa trên kích thước
-                Bitmap bitmap;
-                switch (size.toLowerCase()) {
-                    case "small":
-                        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon_small);
-                        break;
-                    case "medium":
-                        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon_medium);
-                        break;
-                    case "big":
-                        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon_large);
-                        break;
-                    default:
-                        return;
-                }
+        // Tải ảnh dựa trên kích thước
+        Bitmap bitmap;
+        switch (size.toLowerCase()) {
+            case "small":
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon_small);
+                break;
+            case "medium":
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon_medium);
+                break;
+            case "big":
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pothole_icon_large);
+                break;
+            default:
+                return;
+        }
 
-                // Giảm kích thước Bitmap
-                Bitmap scaledBitmap = scaleBitmap(bitmap, 0.2f); // Giảm kích thước xuống 20% (thay đổi nếu cần)
+        // Giảm kích thước Bitmap
+        Bitmap scaledBitmap = scaleBitmap(bitmap, 0.1f); // Giảm kích thước xuống 20% (thay đổi nếu cần)
 
-                // Thêm PointAnnotationOptions
-                PointAnnotationOptions options = new PointAnnotationOptions()
-                        .withPoint(point)
-                        .withIconImage(scaledBitmap)
-                        .withIconSize(1.0f); // Kích thước Mapbox iconSize (dùng 1.0f vì bitmap đã được giảm)
+        // Thêm PointAnnotationOptions
+        PointAnnotationOptions options = new PointAnnotationOptions()
+                .withPoint(point)
+                .withIconImage(scaledBitmap)
+                .withIconSize(1.0f); // Kích thước Mapbox iconSize (dùng 1.0f vì bitmap đã được giảm)
 
-                pointAnnotationManager.create(options);
-
-            }
-        });
+        pointAnnotationManager.create(options);
     }
 
 
     // Phương thức để khởi tạo và lắng nghe sự thay đổi camera
     public void startListeningCameraChange() {
-        mapView.getMapboxMap().addOnCameraChangeListener((cameraState) -> {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastCameraUpdateTime > 250) { // Nếu quá 250ms, coi như camera đã dừng lại
-                if (cameraState != null) {
-                    double zoom = mapView.getMapboxMap().getCameraState().getZoom();
-                    updateIconSize(zoom);
-                } else {
-                    Toast.makeText(context, "Camera state is null", Toast.LENGTH_SHORT).show();
-                }
-            }
-            lastCameraUpdateTime = currentTime; // Cập nhật thời gian
-        });
-    }
+        // Tạo Runnable để thực hiện cập nhật kích thước marker
+        cameraUpdateRunnable = new Runnable() {
+            @Override
+            public void run() {
+                double zoom = mapView.getMapboxMap().getCameraState().getZoom();
+                updateIconSize(zoom); // Cập nhật kích thước marker dựa trên mức độ zoom
 
+                // Đặt Runnable chạy lại sau 3 giây
+                handler.postDelayed(this, updateInterval);
+            }
+        };
+
+        // Bắt đầu chạy Runnable
+        handler.post(cameraUpdateRunnable);
+    }
+    public void stopListeningCameraChange() {
+        if (handler != null && cameraUpdateRunnable != null) {
+            handler.removeCallbacks(cameraUpdateRunnable);
+        }
+    }
 
     private void insertPothole(double longitude, double latitude, String email, String size) {
         // Tạo một đối tượng Pothole với các tham số đã cung cấp
@@ -186,30 +193,34 @@ public class PotholeReporter {
     }
 
     public void getAllPotholes(ApiCallback<List<Pothole>> callback) {
-        // Tạo instance của API interface
         restful_api apiInterface = ApiClient.getRetrofitInstance().create(restful_api.class);
 
-        // Gọi API để lấy danh sách potholes
         Call<List<Pothole>> call = apiInterface.getAllPotholes();
         call.enqueue(new Callback<List<Pothole>>() {
             @Override
             public void onResponse(Call<List<Pothole>> call, Response<List<Pothole>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Trả về danh sách potholes thông qua callback
-                    callback.onSuccess(response.body());
+                    List<Pothole> potholes = response.body();
+                    callback.onSuccess(potholes);
+
+                    // Thêm tất cả các pothole lên bản đồ
+                    for (Pothole pothole : potholes) {
+                        Point point = Point.fromLngLat(pothole.getLongitude(), pothole.getLatitude());
+                        String size = pothole.getSize();
+                        addMarker(point, size);
+                    }
                 } else {
-                    // Trả về lỗi nếu response không thành công
                     callback.onError(new Exception("Failed to fetch potholes. Response code: " + response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<List<Pothole>> call, Throwable t) {
-                // Trả về lỗi nếu gọi API thất bại
                 callback.onError(new Exception("API call failed: " + t.getMessage(), t));
             }
         });
     }
+
 
     // Interface callback để xử lý kết quả bất đồng bộ
     public interface ApiCallback<T> {
