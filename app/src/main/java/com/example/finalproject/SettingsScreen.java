@@ -161,6 +161,8 @@ public class SettingsScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsScreen.this, ChangePassword.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
                 startActivity(intent);
             }
         });
