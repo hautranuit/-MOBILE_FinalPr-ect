@@ -109,15 +109,15 @@ public interface restful_api {
     Call<Map<String, Long>> countPotholesByDay();
 
     // API lấy avatar dựa trên email
-    @GET("/user/{email}/avatar")
+    @GET("/authentication/{email}/avatar")
     Call<ResponseBody> getAvatarByEmail(@Path("email") String email);
 
     // API xóa người dùng dựa trên email
-    @DELETE("/user/{email}")
+    @DELETE("/authentication/{email}")
     Call<ApiResponse> deleteUser(@Path("email") String email);
 
     // API đổi mật khẩu dựa trên email
-    @PUT("/user/{email}/change-password")
+    @PUT("/authentication/{email}/change-password")
     Call<ApiResponse> changePassword(
             @Path("email") String email,
             @Query("oldPassword") String oldPassword,
@@ -125,7 +125,7 @@ public interface restful_api {
     );
 
     // API lấy thông tin người dùng dựa trên email
-    @GET("/user/{email}")
+    @GET("/authentication/{email}")
     Call<UserResponse> getUserByEmail(@Path("email") String email);
 
     //API lấy danh sách thông tin những ổ gà một người đã khai báo

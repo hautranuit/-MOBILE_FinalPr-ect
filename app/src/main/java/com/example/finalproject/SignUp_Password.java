@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class SignUp_Password extends AppCompatActivity {
 
-    ImageView btnClose, btnrightarrow;
+    ImageView btnClose, btnrightarrow,iconEye;
     EditText edit_text_password;
 
     @Override
@@ -33,6 +34,18 @@ public class SignUp_Password extends AppCompatActivity {
         btnClose = findViewById(R.id.btnClose);
         btnrightarrow = findViewById(R.id.btnrightarrow);
         edit_text_password = findViewById(R.id.edit_text_password);
+        iconEye = findViewById(R.id.icon_eye);
+
+        iconEye.setOnClickListener(v -> {
+            if (edit_text_password.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                edit_text_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                iconEye.setImageResource(R.drawable.ic_eye);
+            } else {
+                edit_text_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                iconEye.setImageResource(R.drawable.ic_eye_close);
+            }
+            edit_text_password.setSelection(edit_text_password.getText().length());
+        });
 
         // Xử lý sự kiện nút Close
         btnClose.setOnClickListener(view -> {

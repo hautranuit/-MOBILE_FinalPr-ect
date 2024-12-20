@@ -6,5 +6,254 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SettingsAboutUs">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:background="@drawable/gradient_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- Logo -->
+            <ImageView
+                android:id="@+id/logoImageView"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/logopothole"
+                android:contentDescription="app logo"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Tên ứng dụng -->
+            <TextView
+                android:id="@+id/appNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_black_italic"
+                android:text="@string/pothele_discosafe"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Mô tả ngắn -->
+            <TextView
+                android:id="@+id/descriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pothole detection application, helping to improve traffic safety."
+                android:textSize="16sp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:textColor="#FFFFFF" />
+
+            <!-- Thông tin liên hệ -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Contact information"
+                android:textSize="18sp"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:textColor="#FFFFFF" />
+
+            <!-- Email -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_gmail"
+                    android:contentDescription="gmail icon"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/emailTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="22520412@gm.uit.edu.vn"
+                    android:textSize="16sp"
+                    android:layout_marginStart="10dp"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
+
+            <!-- Số điện thoại -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_phone"
+                    android:contentDescription="icon phone"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/phoneTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+84 123 456 789"
+                    android:layout_marginStart="10dp"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
+
+            <!-- Website -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_website"
+                    android:contentDescription="icon website"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/websiteTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="www.potholeapp.com"
+                    android:textSize="16sp"
+                    android:layout_marginStart="10dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorLink="#FFFFFF"
+                    android:autoLink="web" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vision and Mission"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#FFFFFF" />
+            <TextView
+                android:id="@+id/missionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Becoming the leading application in improving traffic infrastructure and safety for everyone."
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp"
+                android:textColor="#FFFFFF" />
+
+            <!-- Đội ngũ phát triển -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Development team"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#FFFFFF" />
+            <TextView
+                android:id="@+id/teamTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1. Tran Ngoc Hau - Leader\n2. Nguyen Phuong Minh Tri - Backend Developer\n3. Ho Van Phuoc - Frontend Developer\n4. Ho Cong Hieu - UI/UX Designer"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp"
+                android:textColor="#FFFFFF" />
+
+
+            <!-- Phiên bản ứng dụng -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="Version:"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/versionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="18dp"
+                    android:text=" 1.2.3"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <!-- Mạng xã hội -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Social media"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#FFFFFF" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center">
+
+                <!-- Facebook -->
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_facebook"
+                    android:contentDescription="Facebook"
+                    android:layout_marginEnd="20dp" />
+
+                <!-- Twitter -->
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_twitter"
+                    android:contentDescription="Twitter"
+                    android:layout_marginEnd="20dp" />
+
+                <!-- Instagram -->
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_instagram"
+                    android:contentDescription="Instagram" />
+            </LinearLayout>
+
+            <!-- Footer -->
+            <TextView
+                android:id="@+id/footerTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="© 2024 Pothole Detector Team"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

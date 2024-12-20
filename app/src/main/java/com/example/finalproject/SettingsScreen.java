@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,12 @@ public class SettingsScreen extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_settings_screen);
 
+        String email = getIntent().getStringExtra("USER_EMAIL");
+        if (email != null) {
+            // Sử dụng email trong SettingsScreen
+            Toast.makeText(SettingsScreen.this, email, Toast.LENGTH_SHORT).show();
+        }
+
         /*Intent intent = getIntent();
         email = intent.getStringExtra("userEmail"); // Nhận email từ Intent
 
@@ -51,7 +58,7 @@ public class SettingsScreen extends AppCompatActivity {
         //String loggedInEmail = getIntent().getStringExtra("USER_EMAIL");
 
         // Lấy email từ SharedPreferences một lần
-        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        /*sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String loggedInEmail = sharedPreferences.getString("USER_EMAIL", null);
         if (loggedInEmail == null || loggedInEmail.isEmpty()) {
             Toast.makeText(this, "Không tìm thấy email đăng nhập", Toast.LENGTH_SHORT).show();
@@ -84,13 +91,14 @@ public class SettingsScreen extends AppCompatActivity {
             editor = sharedPreferences.edit();
             editor.putBoolean("DarkMode", isChecked);
             editor.apply();
-        });
+        });*/
         // Xử lý khi người dùng nhấn vào TextView để xóa tài khoản
         TextView removeAccount = findViewById(R.id.removeAccount);
 
         removeAccount.setOnClickListener(view -> {
             //String loggedInEmail = "22520433@gm.uit.edu.vn"; // Lấy email từ session hoặc SharedPreferences
-            deleteUser(loggedInEmail);
+            deleteUser(email);
+
         });
 
 
@@ -153,6 +161,8 @@ public class SettingsScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsScreen.this, ChangePassword.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
                 startActivity(intent);
             }
         });
@@ -175,9 +185,18 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
+        TextView PrivacyPolicy = findViewById(R.id.privacyPolicy);
+        PrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsScreen.this, SettingsPrivacyPolicy.class);
+                startActivity(intent);
+            }
+        });
+
 
         // Kiểm tra chế độ từ SharedPreferences
-        /*sharedPreferences = getSharedPreferences("AppSettingsPrefs", 0);
+        sharedPreferences = getSharedPreferences("AppSettingsPrefs", 0);
         boolean isDarkMode = sharedPreferences.getBoolean("DarkMode", false);
 
         // Đặt chế độ ban đầu
@@ -202,7 +221,7 @@ public class SettingsScreen extends AppCompatActivity {
             editor = sharedPreferences.edit();
             editor.putBoolean("DarkMode", isChecked);
             editor.apply();
-        });*/
+        });
 
     }
 
@@ -215,28 +234,15 @@ public class SettingsScreen extends AppCompatActivity {
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                Log.d("API_RESPONSE", "Code: " + response.code());
-                Log.d("API_RESPONSE", "Message: " + response.message());
-
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse apiResponse = response.body();
-                    Log.d("API_RESPONSE", "Success: " + apiResponse.isSuccess());
-                    Log.d("API_RESPONSE", "Message: " + apiResponse.getMessage());
-
-                    if (apiResponse.isSuccess()) {
-                        Toast.makeText(getApplicationContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    // Chuyển sang màn hình WelcomeScreen
+                    Intent intent = new Intent(SettingsScreen.this, WelcomeScreen.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish(); // Đóng màn hình SettingsScreen sau khi xóa thành công
                 } else {
-                    String errorBody = "";
-                    try {
-                        errorBody = response.errorBody().string();
-                        Log.e("API_ERROR", "Error body: " + errorBody);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    Log.e("API_ERROR", "Error: " + response.message());
                     Toast.makeText(getApplicationContext(), "Lỗi xóa người dùng: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -248,7 +254,5 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
     }
-
-
 
 }
