@@ -69,6 +69,9 @@ public class MainComponent extends AppCompatActivity {
              @Override
              public void onClick(View v) {
                  Intent intent = new Intent(MainComponent.this, BoxMaps.class);
+                 String email = getIntent().getStringExtra("USER_EMAIL");
+                 intent.putExtra("USER_EMAIL", email);
+                 startActivity(intent);
                  startActivity(intent);
              }
         });
@@ -78,6 +81,8 @@ public class MainComponent extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainComponent.this, DashBoard.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
                 startActivity(intent);
             }
         });

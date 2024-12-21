@@ -51,6 +51,12 @@ public class DashBoard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
 
+        String email = getIntent().getStringExtra("USER_EMAIL");
+        if (email != null) {
+            // Sử dụng email trong SettingsScreen
+            Toast.makeText(DashBoard.this, email, Toast.LENGTH_SHORT).show();
+        }
+
         // Đảm bảo ID "main" tồn tại trong activity_dash_board.xml
         View mainView = findViewById(R.id.main);
         ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
@@ -59,10 +65,7 @@ public class DashBoard extends AppCompatActivity {
             return insets;
         });
 
-        Intent intentDashboard = getIntent();
 
-        // Lấy giá trị email từ Intent
-        String email = intentDashboard.getStringExtra("USER_EMAIL");
 
         ImageView iconBack = findViewById(R.id.iconBack);
 
