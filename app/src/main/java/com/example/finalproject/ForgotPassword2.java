@@ -54,7 +54,7 @@ public class ForgotPassword2 extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
 
         instruction = findViewById(R.id.instruction);
-        instruction.setText("We just sent you a verification code via your email" + email);
+        instruction.setText("We just sent you a verification code via:" + email);
 
         resendCode.setOnClickListener(new View.OnClickListener() {
             @Override

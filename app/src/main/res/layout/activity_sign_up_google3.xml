@@ -207,6 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Cancel"
+                    android:fontFamily="@font/poppins_light_italic"
                     android:backgroundTint="#FFFFFF"
                     android:textColor="#4285F4" />
 
@@ -216,8 +217,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Allow"
-                    android:backgroundTint="#4285F4"
-                    android:textColor="#FFFFFF" />
+                    android:fontFamily="@font/poppins_light_italic"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="#4285F4"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

@@ -147,8 +147,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Back"
+                    android:fontFamily="@font/poppins_light_italic"
+                    android:textColor="@android:color/white"
                     android:backgroundTint="#4B3621"
-                    android:textColor="#FFFFFF"
                     android:layout_marginEnd="8dp" />
 
                 <Button
@@ -157,7 +158,8 @@
                     android:layout_height="wrap_content"
                     android:text="Confirm"
                     android:backgroundTint="#4B3621"
-                    android:textColor="#FFFFFF" />
+                    android:fontFamily="@font/poppins_light_italic"
+                    android:textColor="@android:color/white" />
             </LinearLayout>
 
         </LinearLayout>

@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.finalproject.api.ApiClient;
 import com.example.finalproject.api.ApiResponse;
+import com.example.finalproject.api.UserResponse;
 import com.example.finalproject.api.restful_api;
 
 import retrofit2.Call;
@@ -42,56 +43,16 @@ public class SettingsScreen extends AppCompatActivity {
         setContentView(R.layout.activity_settings_screen);
 
         String email = getIntent().getStringExtra("USER_EMAIL");
-        if (email != null) {
+        /*if (email != null) {
             // Sử dụng email trong SettingsScreen
             Toast.makeText(SettingsScreen.this, email, Toast.LENGTH_SHORT).show();
-        }
-
-        /*Intent intent = getIntent();
-        email = intent.getStringExtra("userEmail"); // Nhận email từ Intent
-
-        if (email == null || email.isEmpty()) {
-            Toast.makeText(this, "Email không hợp lệ hoặc trống!", Toast.LENGTH_SHORT).show();
-            return;
         }*/
 
-        //String loggedInEmail = getIntent().getStringExtra("USER_EMAIL");
+        // Gán TextView fullname
+        TextView fullname = findViewById(R.id.fullName);
+        // Gọi API để lấy thông tin người dùng và hiển thị fullname
+        fetchAndDisplayUserInfo(email, fullname);
 
-        // Lấy email từ SharedPreferences một lần
-        /*sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String loggedInEmail = sharedPreferences.getString("USER_EMAIL", null);
-        if (loggedInEmail == null || loggedInEmail.isEmpty()) {
-            Toast.makeText(this, "Không tìm thấy email đăng nhập", Toast.LENGTH_SHORT).show();
-            return; // Không thực hiện tiếp nếu không có email
-        }
-
-        // Lấy chế độ tối từ SharedPreferences
-        boolean isDarkMode = sharedPreferences.getBoolean("DarkMode", false);
-
-        // Đặt chế độ ban đầu
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-
-        // Gán switch chế độ tối
-        darkModeSwitch = findViewById(R.id.darkModeSwitch);
-        darkModeSwitch.setChecked(isDarkMode);
-
-        // Lắng nghe sự kiện bấm switch để thay đổi chế độ sáng/tối
-        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-
-            // Lưu trạng thái vào SharedPreferences
-            editor = sharedPreferences.edit();
-            editor.putBoolean("DarkMode", isChecked);
-            editor.apply();
-        });*/
         // Xử lý khi người dùng nhấn vào TextView để xóa tài khoản
         TextView removeAccount = findViewById(R.id.removeAccount);
 
@@ -109,6 +70,42 @@ public class SettingsScreen extends AppCompatActivity {
         });
         setUpNavigation();
     }
+
+    // Phương thức gọi API và hiển thị fullname
+    private void fetchAndDisplayUserInfo(String email, TextView fullnameTextView) {
+        if (email == null || email.isEmpty()) {
+            Toast.makeText(this, "Không tìm thấy email!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        restful_api apiService = ApiClient.getRetrofitInstance().create(restful_api.class);
+
+        Call<UserResponse> call = apiService.getUserByEmail(email);
+        call.enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String fullname = response.body().getFullname();
+                    if (fullname != null) {
+                        // Hiển thị fullname lên TextView
+                        fullnameTextView.setText(fullname);
+                    } else {
+                        fullnameTextView.setText("Không có tên đầy đủ.");
+                    }
+                } else {
+                    Log.e("API_ERROR", "Error: " + response.message());
+                    Toast.makeText(SettingsScreen.this, "Lỗi khi lấy thông tin người dùng.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Log.e("API_FAILURE", "Error: " + t.getMessage());
+                Toast.makeText(SettingsScreen.this, "Không thể kết nối tới máy chủ.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void setUpNavigation() {
         ImageView backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> {

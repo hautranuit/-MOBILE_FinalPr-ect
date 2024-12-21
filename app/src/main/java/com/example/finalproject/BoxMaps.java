@@ -365,7 +365,7 @@ public class BoxMaps extends AppCompatActivity {
         });
 
         //Gọi API để lấy avatar
-        fetchAvatar(userEmail);
+        //fetchAvatar(userEmail);
 
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(BoxMaps.this).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(BoxMaps.this).build());
@@ -725,7 +725,7 @@ public class BoxMaps extends AppCompatActivity {
         Toast.makeText(this, "All data deleted", Toast.LENGTH_SHORT).show();
     }
 
-    private void fetchAvatar(String email) {
+    /*private void fetchAvatar(String email) {
         restful_api apiService = ApiClient.getRetrofitInstance().create(restful_api.class);
 
         apiService.getAvatarByEmail(email).enqueue(new Callback<ResponseBody>() {
@@ -746,7 +746,7 @@ public class BoxMaps extends AppCompatActivity {
                 Toast.makeText(BoxMaps.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
 
 }
