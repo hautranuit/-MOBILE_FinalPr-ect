@@ -119,6 +119,8 @@ public class SettingsScreen extends AppCompatActivity {
         ImageView backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsScreen.this, MainComponent.class);
+            String email = getIntent().getStringExtra("USER_EMAIL");
+            intent.putExtra("USER_EMAIL", email);
             startActivity(intent);
         });
 
@@ -157,7 +159,9 @@ public class SettingsScreen extends AppCompatActivity {
         editprofile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SettingsScreen.this, DetailSignUp.class);
+                Intent intent = new Intent(SettingsScreen.this, EditProfile.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
                 startActivity(intent);
             }
         });
