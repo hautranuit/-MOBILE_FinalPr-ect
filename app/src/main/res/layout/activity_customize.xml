@@ -23,12 +23,12 @@
 
         <ImageView
             android:id="@+id/iconBack"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:src="@drawable/ic_back"
+            android:layout_width="6dp"
+            android:layout_height="11dp"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:contentDescription="Back Icon"
-            android:layout_marginEnd="8dp" />
+            android:src="@drawable/ic_back" />
 
         <TextView
             android:id="@+id/tvHeader"

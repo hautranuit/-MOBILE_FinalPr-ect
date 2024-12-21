@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -63,6 +64,16 @@ public class DashBoard extends AppCompatActivity {
         // Lấy giá trị email từ Intent
         String email = intentDashboard.getStringExtra("USER_EMAIL");
 
+        ImageView iconBack = findViewById(R.id.iconBack);
+
+        // Đặt sự kiện click
+        iconBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Quay về màn hình trước đó
+                finish();
+            }
+        });
         // Khởi tạo Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://finalmap.click/")
