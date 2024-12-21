@@ -2,6 +2,8 @@ package com.example.finalproject;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +26,8 @@ import com.example.finalproject.api.ApiResponse;
 import com.example.finalproject.api.UserResponse;
 import com.example.finalproject.api.restful_api;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,6 +51,11 @@ public class SettingsScreen extends AppCompatActivity {
             // Sử dụng email trong SettingsScreen
             Toast.makeText(SettingsScreen.this, email, Toast.LENGTH_SHORT).show();
         }*/
+
+        //Lấy avatar
+        CircleImageView avatarImageView = findViewById(R.id.circleImageView);
+        fetchAndDisplayAvatar(email, avatarImageView);
+
 
         // Gán TextView fullname
         TextView fullname = findViewById(R.id.fullName);
@@ -222,6 +231,7 @@ public class SettingsScreen extends AppCompatActivity {
 
     }
 
+
     // Phương thức xóa tài khoản
     private void deleteUser(String email) {
         restful_api apiService = ApiClient.getRetrofitInstance().create(restful_api.class);
@@ -252,4 +262,34 @@ public class SettingsScreen extends AppCompatActivity {
         });
     }
 
+    private void fetchAndDisplayAvatar(String email, CircleImageView avatarImageView) {
+        if (email == null || email.isEmpty()) {
+            Toast.makeText(this, "Không tìm thấy email!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        restful_api apiService = ApiClient.getRetrofitInstance().create(restful_api.class);
+        Call<ResponseBody> call = apiService.getAvatarByEmail(email);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Convert the response to a Bitmap
+                    Bitmap avatarBitmap = BitmapFactory.decodeStream(response.body().byteStream());
+                    // Set the Bitmap to CircleImageView
+                    avatarImageView.setImageBitmap(avatarBitmap);
+                } else {
+                    Log.e("API_ERROR", "Error: " + response.message());
+                    Toast.makeText(SettingsScreen.this, "Không tìm thấy ảnh đại diện.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("API_FAILURE", "Error: " + t.getMessage());
+                Toast.makeText(SettingsScreen.this, "Không thể tải ảnh đại diện.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

@@ -37,6 +37,7 @@ import androidx.core.app.ActivityCompat;
 import com.example.finalproject.api.ApiClient;
 import com.example.finalproject.api.ApiResponse;
 import com.example.finalproject.api.Pothole;
+import com.example.finalproject.api.UserResponse;
 import com.example.finalproject.api.restful_api;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -112,6 +113,7 @@ import com.mapbox.search.ui.adapter.autocomplete.PlaceAutocompleteUiAdapter;
 import com.mapbox.search.ui.view.CommonSearchViewConfiguration;
 import com.mapbox.search.ui.view.SearchResultsView;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -350,10 +352,10 @@ public class BoxMaps extends AppCompatActivity {
         //deleteAllDatabaseData();
 
         // Tìm CircleImageView
-        CircleImageView profileImage = findViewById(R.id.profileImage);
+        CircleImageView profileimage = findViewById(R.id.profileImage);
 
         // Đặt sự kiện click
-        profileImage.setOnClickListener(new View.OnClickListener() {
+        profileimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Chuyển sang Activity mới
@@ -365,7 +367,7 @@ public class BoxMaps extends AppCompatActivity {
         });
 
         //Gọi API để lấy avatar
-        //fetchAvatar(userEmail);
+        fetchAndDisplayAvatar(userEmail, profileimage);
 
         maneuverApi = new MapboxManeuverApi(new MapboxDistanceFormatter(new DistanceFormatterOptions.Builder(BoxMaps.this).build()));
         routeArrowView = new MapboxRouteArrowView(new RouteArrowOptions.Builder(BoxMaps.this).build());
@@ -725,28 +727,38 @@ public class BoxMaps extends AppCompatActivity {
         Toast.makeText(this, "All data deleted", Toast.LENGTH_SHORT).show();
     }
 
-    /*private void fetchAvatar(String email) {
-        restful_api apiService = ApiClient.getRetrofitInstance().create(restful_api.class);
+    private void fetchAndDisplayAvatar(String email, CircleImageView avatarImageView) {
+        if (email == null || email.isEmpty()) {
+            Toast.makeText(this, "Không tìm thấy email!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        apiService.getAvatarByEmail(email).enqueue(new Callback<ResponseBody>() {
+        restful_api apiService = ApiClient.getRetrofitInstance().create(restful_api.class);
+        Call<ResponseBody> call = apiService.getAvatarByEmail(email);
+
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Sử dụng Glide để load ảnh
-                    Glide.with(BoxMaps.this)
-                            .load(response.body().byteStream()) // Tải ảnh từ stream
-                            .into(profileImage);
+                    // Convert the response to a Bitmap
+                    Bitmap avatarBitmap = BitmapFactory.decodeStream(response.body().byteStream());
+                    // Set the Bitmap to CircleImageView
+                    avatarImageView.setImageBitmap(avatarBitmap);
                 } else {
-                    Toast.makeText(BoxMaps.this, "Failed to load avatar", Toast.LENGTH_SHORT).show();
+                    Log.e("API_ERROR", "Error: " + response.message());
+                    Toast.makeText(BoxMaps.this, "Không tìm thấy ảnh đại diện.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(BoxMaps.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API_FAILURE", "Error: " + t.getMessage());
+                Toast.makeText(BoxMaps.this, "Không thể tải ảnh đại diện.", Toast.LENGTH_SHORT).show();
             }
         });
-    }*/
+    }
+
+
 
 
 }
