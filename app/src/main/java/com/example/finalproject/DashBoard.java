@@ -151,8 +151,10 @@ public class DashBoard extends AppCompatActivity {
         });
     }
     private void setupSecondPieChart() {
+        String email = getIntent().getStringExtra("USER_EMAIL");
+
         // Gọi API với email cụ thể
-        Call<Map<String, Long>> call = apiService.countPotholesBySizeAndEmail("22520412@gm.uit.edu.vn");
+        Call<Map<String, Long>> call = apiService.countPotholesBySizeAndEmail(email);
 
         call.enqueue(new Callback<Map<String, Long>>() {
             @Override
@@ -311,8 +313,7 @@ public class DashBoard extends AppCompatActivity {
 
     private void setupLineChart() {
         // Email cố định để gọi API
-        String email = "22520412@gm.uit.edu.vn";
-
+        String email = getIntent().getStringExtra("USER_EMAIL");
         // Gọi API để lấy danh sách ổ gà
         apiService.getPotholesReportedByUser(email).enqueue(new Callback<List<Map<String, Object>>>() {
             @Override
