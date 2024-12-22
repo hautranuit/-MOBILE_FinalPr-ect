@@ -599,7 +599,7 @@ public class BoxMaps extends AppCompatActivity {
 
                     }
                 });
-            }
+            };
 
             @Override
             public void onFailure(@NonNull Exception exception) {

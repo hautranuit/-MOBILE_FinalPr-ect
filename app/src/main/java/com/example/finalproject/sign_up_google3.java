@@ -32,7 +32,9 @@ public class sign_up_google3 extends AppCompatActivity {
             public void onClick(View v) {
                 // Mở màn hình BoxMaps
                 Intent intent = new Intent(sign_up_google3.this, BoxMaps.class);
+                intent.putExtra("USER_EMAIL", "22520433@gm.uit.edu.vn");
                 startActivity(intent);
+                finish();
             }
         });
     }
