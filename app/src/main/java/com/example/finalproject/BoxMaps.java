@@ -729,6 +729,7 @@ public class BoxMaps extends AppCompatActivity {
 
     private void fetchAndDisplayAvatar(String email, CircleImageView avatarImageView) {
         if (email == null || email.isEmpty()) {
+            Toast.makeText(BoxMaps.this, "Email không hợp lệ. Vui lòng kiểm tra lại.", Toast.LENGTH_SHORT).show();
             return;
         }
 
