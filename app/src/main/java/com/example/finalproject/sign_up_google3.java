@@ -1,6 +1,9 @@
 package com.example.finalproject;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +22,18 @@ public class sign_up_google3 extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+        // Lấy tham chiếu đến nút allow_button
+        Button allowButton = findViewById(R.id.allow_button);
+
+        // Gắn sự kiện OnClickListener cho nút
+        allowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Mở màn hình BoxMaps
+                Intent intent = new Intent(sign_up_google3.this, BoxMaps.class);
+                startActivity(intent);
+            }
         });
     }
 }
