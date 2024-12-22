@@ -132,6 +132,8 @@ public class SettingsScreen extends AppCompatActivity {
             public void onClick(View v) {
                 // Chuyển sang Activity SettingsEnglishLanguageActivity
                 Intent intent = new Intent(SettingsScreen.this, Settings_englishLanguage.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
                 startActivity(intent);
             }
         });

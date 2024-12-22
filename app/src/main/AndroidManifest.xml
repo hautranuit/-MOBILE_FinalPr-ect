@@ -20,6 +20,9 @@
         tools:ignore="ExtraText"
         tools:targetApi="31">
         <activity
+            android:name=".SettingsScreenVN"
+            android:exported="false" />
+        <activity
             android:name=".Edit_Profile"
             android:exported="false" />
         <activity

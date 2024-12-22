@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -23,6 +24,7 @@ public class Settings_vietnamLanguage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_settings_vietnam_language);
 
+
         // Áp dụng thay đổi Insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -30,17 +32,32 @@ public class Settings_vietnamLanguage extends AppCompatActivity {
             return insets;
         });
 
-        // Khởi động lại ngôn ngữ theo cài đặt đã lưu (nếu có)
-        loadLocale();
 
         // Gán sự kiện nhấn cho TextView Tiếng Việt
-        TextView vietnamese = findViewById(R.id.vietnamese);
-        vietnamese.setOnClickListener(new View.OnClickListener() {
+        ImageView backbutton = findViewById(R.id.backButton);
+        backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeLanguage("vi"); // Thay đổi ngôn ngữ sang Tiếng Việt
+                Intent intent = new Intent(Settings_vietnamLanguage.this, SettingsScreenVN.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
+                startActivity(intent);
             }
         });
+
+        TextView english = findViewById(R.id.english);
+
+        english.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Settings_vietnamLanguage.this, Settings_englishLanguage.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     private void changeLanguage(String languageCode) {

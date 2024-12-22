@@ -129,11 +129,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/txtEnglish"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/gradient_background0"
                 android:clickable="true"
-                android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="18dp">
@@ -150,8 +151,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="English"
-                    android:textSize="16sp"
                     android:textColor="@color/white"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <ImageView
