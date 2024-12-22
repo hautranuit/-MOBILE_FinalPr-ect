@@ -9,6 +9,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -111,6 +113,15 @@ public interface restful_api {
     // API lấy avatar dựa trên email
     @GET("/authentication/{email}/avatar")
     Call<ResponseBody> getAvatarByEmail(@Path("email") String email);
+
+    //API chỉnh sửa profile
+    @FormUrlEncoded
+    @POST("/authentication/update-user-details")
+    Call<ResponseBody> updateUserDetails(
+            @Field("email") String email,
+            @Field("username") String username,
+            @Field("fullname") String fullname
+    );
 
     // API xóa người dùng dựa trên email
     @DELETE("/authentication/{email}")

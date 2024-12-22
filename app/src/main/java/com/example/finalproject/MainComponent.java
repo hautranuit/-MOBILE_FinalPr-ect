@@ -72,7 +72,6 @@ public class MainComponent extends AppCompatActivity {
                  String email = getIntent().getStringExtra("USER_EMAIL");
                  intent.putExtra("USER_EMAIL", email);
                  startActivity(intent);
-                 startActivity(intent);
              }
         });
 

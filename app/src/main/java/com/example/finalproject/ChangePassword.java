@@ -41,10 +41,10 @@ public class ChangePassword extends AppCompatActivity {
         setContentView(R.layout.activity_change_password);
 
         String email = getIntent().getStringExtra("USER_EMAIL");
-        if (email != null) {
-            // Sử dụng email trong ChangePassword
-            Toast.makeText(ChangePassword.this, email, Toast.LENGTH_SHORT).show();
-        }
+//        if (email != null) {
+//            // Sử dụng email trong ChangePassword
+//            Toast.makeText(ChangePassword.this, email, Toast.LENGTH_SHORT).show();
+//        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

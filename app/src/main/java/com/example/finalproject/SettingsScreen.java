@@ -155,11 +155,22 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
-        TextView editprofile = findViewById(R.id.editProfile);
-        editprofile.setOnClickListener(new View.OnClickListener() {
+        /*TextView edit_profile = findViewById(R.id.editProfile);
+        edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsScreen.this, EditProfile.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
+                startActivity(intent);
+            }
+        });*/
+
+        TextView profile = findViewById(R.id.editProfile);
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SettingsScreen.this, Edit_Profile.class);
                 String email = getIntent().getStringExtra("USER_EMAIL");
                 intent.putExtra("USER_EMAIL", email);
                 startActivity(intent);
