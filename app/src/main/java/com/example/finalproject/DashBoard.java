@@ -152,21 +152,16 @@ public class DashBoard extends AppCompatActivity {
     }
     private void setupSecondPieChart() {
         String email = getIntent().getStringExtra("USER_EMAIL");
-
-        // Gọi API với email cụ thể
         Call<Map<String, Long>> call = apiService.countPotholesBySizeAndEmail(email);
-
         call.enqueue(new Callback<Map<String, Long>>() {
             @Override
             public void onResponse(Call<Map<String, Long>> call, Response<Map<String, Long>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Cập nhật biểu đồ với dữ liệu trả về
                     updateSecondPieChart(response.body());
                 } else {
                     secondPieChart.setNoDataText("No data available.");
                 }
             }
-
             @Override
             public void onFailure(Call<Map<String, Long>> call, Throwable t) {
                 secondPieChart.setNoDataText("Failed to load data.");
@@ -175,33 +170,26 @@ public class DashBoard extends AppCompatActivity {
         });
     }
     private void updateSecondPieChart(Map<String, Long> data) {
-        // Đảm bảo rằng dữ liệu không rỗng
         if (data == null || data.isEmpty()) {
             secondPieChart.setNoDataText("No data available");
             return;
         }
-
         List<PieEntry> entries = new ArrayList<>();
-
         // Lấy giá trị cho các size "small", "medium", "big"
         int smallCount = data.getOrDefault("small", 0L).intValue();
         int mediumCount = data.getOrDefault("medium", 0L).intValue();
         int bigCount = data.getOrDefault("big", 0L).intValue();
-
         if (smallCount > 0) entries.add(new PieEntry(smallCount, "Small"));
         if (mediumCount > 0) entries.add(new PieEntry(mediumCount, "Medium"));
         if (bigCount > 0) entries.add(new PieEntry(bigCount, "Big"));
-
         PieDataSet dataSet = new PieDataSet(entries, "Pothole Sizes by Email");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         PieData pieData = new PieData(dataSet);
-
         Description description = new Description();
         description.setText("Potholes by Email");
         secondPieChart.setDescription(description);
-
         secondPieChart.setData(pieData);
-        secondPieChart.invalidate(); // Làm mới biểu đồ
+        secondPieChart.invalidate();
     }
 
     private void updatePieChart(int smallCount, int mediumCount, int bigCount) {
@@ -259,12 +247,19 @@ public class DashBoard extends AppCompatActivity {
         });
         sortedData.putAll(data);
 
+        // Lọc ra 5 ngày gần nhất
+        List<Map.Entry<String, Long>> recentEntries = new ArrayList<>(sortedData.entrySet());
+        if (recentEntries.size() > 5) {
+            recentEntries = recentEntries.subList(recentEntries.size() - 5, recentEntries.size());
+        }
+
         List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
         int index = 0; // Chỉ số index trên trục X
-        for (String date : sortedData.keySet()) {
-            int count = sortedData.get(date) != null ? sortedData.get(date).intValue() : 0; // Dữ liệu chỉ lấy số nguyên
+        for (Map.Entry<String, Long> entry : recentEntries) {
+            String date = entry.getKey();
+            int count = entry.getValue() != null ? entry.getValue().intValue() : 0; // Dữ liệu chỉ lấy số nguyên
             entries.add(new BarEntry(index, count));
 
             // Chuyển đổi định dạng ngày tháng năm -> ngày tháng
@@ -353,7 +348,7 @@ public class DashBoard extends AppCompatActivity {
     }
 
     private void updateLineChart(List<Map<String, Object>> data, String email) {
-        // Tạo Map để nhóm dữ liệu theo ngày với key là email và value là số lượng ổ gà
+        // Tạo Map để nhóm dữ liệu theo ngày với key là ngày và value là số lượng ổ gà
         Map<String, Integer> potholesPerDay = new HashMap<>();
         List<String> dates = new ArrayList<>();  // Danh sách lưu trữ ngày để sử dụng trên trục X
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM"); // Định dạng ngày tháng (dd/MM)
@@ -375,10 +370,27 @@ public class DashBoard extends AppCompatActivity {
             return;
         }
 
+        // Sắp xếp ngày theo thứ tự tăng dần
+        TreeMap<String, Integer> sortedData = new TreeMap<>((date1, date2) -> {
+            try {
+                return new SimpleDateFormat("yyyy-MM-dd").parse(date1).compareTo(new SimpleDateFormat("yyyy-MM-dd").parse(date2));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return 0; // Nếu lỗi, giữ nguyên thứ tự
+            }
+        });
+        sortedData.putAll(potholesPerDay);
+
+        // Chỉ lấy 5 ngày gần nhất
+        List<Map.Entry<String, Integer>> recentEntries = new ArrayList<>(sortedData.entrySet());
+        if (recentEntries.size() > 5) {
+            recentEntries = recentEntries.subList(recentEntries.size() - 5, recentEntries.size());
+        }
+
         // Tạo các entry cho biểu đồ (dữ liệu ngày và số lượng ổ gà)
         List<Entry> entries = new ArrayList<>();
         int i = 0;  // Đếm các ngày để gán chỉ số cho từng Entry
-        for (Map.Entry<String, Integer> entry : potholesPerDay.entrySet()) {
+        for (Map.Entry<String, Integer> entry : recentEntries) {
             // Định dạng lại ngày từ "yyyy-MM-dd" sang "dd/MM"
             try {
                 String formattedDate = dateFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(entry.getKey()));
@@ -413,6 +425,7 @@ public class DashBoard extends AppCompatActivity {
         // Cập nhật biểu đồ
         lineChart.invalidate();
     }
+
 
 
 
