@@ -65,6 +65,9 @@
     <string name="system_services_update"><![CDATA[System & services update]]></string>
     <string name="default_web_client_id">44441641362-37jdra6d53qeeovjc10tbqes6plm5qhb.apps.googleusercontent.com</string>
     <string name="the_password">The password must be at least 8 characters long, contain no spaces, and include uppercase letters, numbers, and special characters.</string>
+    <string name="search">Search</string>
+    <string name="report">Report</string>
+    <string name="set_route">Set Route</string>
 
 
 </resources>

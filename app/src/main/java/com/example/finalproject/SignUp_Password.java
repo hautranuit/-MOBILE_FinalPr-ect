@@ -34,6 +34,8 @@ public class SignUp_Password extends AppCompatActivity {
         btnClose = findViewById(R.id.btnClose);
         btnrightarrow = findViewById(R.id.btnrightarrow);
         edit_text_password = findViewById(R.id.edit_text_password);
+        edit_text_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
         iconEye = findViewById(R.id.icon_eye);
 
         iconEye.setOnClickListener(v -> {

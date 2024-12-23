@@ -60,7 +60,10 @@ public class MainComponent extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent intent = new Intent(MainComponent.this, BoxMaps.class);
+                String email = getIntent().getStringExtra("USER_EMAIL");
+                intent.putExtra("USER_EMAIL", email);
+                startActivity(intent);
             }
         });
 
