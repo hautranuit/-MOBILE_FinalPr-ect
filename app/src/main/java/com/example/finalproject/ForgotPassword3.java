@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -64,6 +65,9 @@ public class ForgotPassword3 extends AppCompatActivity {
 
         password1 = findViewById(R.id.password1);
         password2 = findViewById(R.id.password2);
+        password1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        password2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
         showpassword = findViewById(R.id.showpassword);
 
         showpassword.setOnCheckedChangeListener((buttonView, isChecked) -> {

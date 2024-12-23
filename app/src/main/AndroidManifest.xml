@@ -71,7 +71,7 @@
             android:name=".Settings_englishLanguage"
             android:exported="false" />
         <activity
-            android:name=".LoginScreen"
+            android:name=".WelcomeScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -110,7 +110,7 @@
             android:name=".SignUp_Google1"
             android:exported="false" />
         <activity
-            android:name=".WelcomeScreen"
+            android:name=".LoginScreen"
             android:exported="false" />
         <activity
             android:name=".ForgotPassword3"
